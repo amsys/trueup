@@ -1,0 +1,13 @@
+"""The levy of the law id fixture."""
+
+
+def first_levy():
+    """Give the first levy."""
+    # law: acts/Sample_Act/base s.1
+    return 1
+
+
+def ninth_levy():
+    """Give the ninth levy."""
+    # law: acts/Sample_Act/base s.9
+    return 9

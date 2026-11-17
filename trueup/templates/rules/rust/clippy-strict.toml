@@ -1,0 +1,11 @@
+# Managed by trueup. Edit trueup.toml, then run the trueup skill.
+# clippy thresholds for strict mode. The clean mode ships no file and uses
+# clippy's own defaults; strict lowers four of them to the research
+# numbers (cognitive complexity 15, function length 60, 5 parameters,
+# nesting depth 4). clippy has no cyclomatic-complexity key, so that one
+# research threshold is not represented here.
+
+cognitive-complexity-threshold = 15
+too-many-lines-threshold = 60
+too-many-arguments-threshold = 5
+excessive-nesting-threshold = 4

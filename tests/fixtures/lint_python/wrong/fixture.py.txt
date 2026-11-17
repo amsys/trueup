@@ -1,0 +1,6 @@
+def exposed():
+    return 1
+
+
+def hidden():  # noqa: D103
+    return 2

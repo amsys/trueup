@@ -1,0 +1,4 @@
+---
+id: open
+
+# The block does not close

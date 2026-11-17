@@ -1,0 +1,4 @@
+# Inline only
+
+The only banned word in this file sits in an inline code span: `myriad`. It
+must not produce a finding.

@@ -1,0 +1,5 @@
+# Managed by trueup. Edit trueup.toml, then run the trueup skill.
+# shellcheck rc file, strict mode: turn on every optional check, then let
+# --severity style report them (clean mode ships no file and keeps the
+# default checks).
+enable=all

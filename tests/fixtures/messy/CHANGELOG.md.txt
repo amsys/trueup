@@ -1,0 +1,7 @@
+# Changelog
+
+## [Unreleased]
+
+### Misc
+
+- A heading type that Keep a Changelog does not name.

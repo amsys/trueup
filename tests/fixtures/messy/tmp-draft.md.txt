@@ -1,0 +1,2 @@
+This is a scratch note dropped into the tree by accident. Nothing else in
+this fixture refers to it by name, so the scratch row should flag it.

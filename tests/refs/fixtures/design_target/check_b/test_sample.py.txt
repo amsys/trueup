@@ -1,0 +1,12 @@
+"""A file with one marked test and one unmarked test."""
+
+
+def test_marked():
+    """This test carries a marker.
+
+    arch: D1.2
+    """
+
+
+def test_unmarked():
+    """This test carries no marker at all."""

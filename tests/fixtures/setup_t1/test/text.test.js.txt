@@ -1,0 +1,6 @@
+// Test the text helpers.
+
+const assert = require("assert");
+const { join } = require("../src/text");
+
+assert.strictEqual(join(["a", "b"]), "a b");

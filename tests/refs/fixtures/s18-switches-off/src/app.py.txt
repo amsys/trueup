@@ -1,0 +1,9 @@
+"""Give one number for the fixture with the switches off."""
+
+import os  # noqa: F401
+
+
+def number():
+    """Give the number."""
+    # NOTE: the number is fixed
+    return 2

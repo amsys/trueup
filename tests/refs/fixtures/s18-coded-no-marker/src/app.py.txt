@@ -1,0 +1,7 @@
+"""The application of the no-marker fixture."""
+
+
+def main():
+    """Give the answer."""
+    # Give the answer to the caller.
+    return 42

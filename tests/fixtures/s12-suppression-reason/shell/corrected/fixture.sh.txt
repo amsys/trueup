@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Print the arguments of the acceptance fixture, split on words.
+# shellcheck disable=SC2086  # the word split is wanted
+echo $1

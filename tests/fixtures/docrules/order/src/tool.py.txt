@@ -1,0 +1,5 @@
+"""Order fixture module."""
+
+# synergy, seamless, robust and holistic in one comment
+VALUE = 1
+# then a plethora of paradigm words on a later line

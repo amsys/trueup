@@ -1,0 +1,27 @@
+# trueup configuration. The trueup skill writes this file. A person can edit it.
+version = 1
+run_date = "2026-11-16"
+tier = "auto"                # auto | T0 | T1 | T2 | T3
+public = true                 # true adds C1, C2 and the public health files
+docs = "full"                # auto | full | readme
+stale_days = 180                # P8
+ignore = ["tests/fixtures/**", "trueup/templates/**"]   # globs left out of the survey and all findings
+protect = []                 # globs that apply never changes or removes
+
+[root]
+allow = [".claude-plugin", "hooks", "scripts", "skills", "trueup"]                   # root entries allowed beyond the base list (D5.8)
+
+[scratch]
+allow = []                   # paths or names the scratch rule lets through (D5.8)
+
+[refs]
+mode = "copy"                   # global: the hook runs trueup refs; copy: a checker copy at path (D9.1)
+path = "trueup/ref_check.py"                   # the reference checker module, relative to the root
+
+[languages]                  # one key per language: strict | clean | off
+python = "clean"
+
+[[keep]]                     # a finding the person declined, with the reason
+id = "prose:docs/explanation/research-repo-hygiene.md"
+reason = "source document, text as received"
+

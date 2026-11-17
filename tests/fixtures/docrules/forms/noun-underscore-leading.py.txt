@@ -1,0 +1,6 @@
+# A fixture module for the D8.5 form test.
+
+# Note the leading underscores: a private name starts with two of them.
+def is_dunder(name: str) -> bool:
+    """Say whether a name starts with two leading marks."""
+    return name.startswith("__")

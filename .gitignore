@@ -1,0 +1,13 @@
+__pycache__/
+node_modules/
+.pytest_cache/
+.ruff_cache/
+graphify-out/
+.fixture-run/
+.state/
+memory/
+.scratch/
+build/
+dist/
+*.egg-info/
+.venv/

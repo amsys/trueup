@@ -1,0 +1,10 @@
+# arch: D1.5
+# Python lint rules for the comment standard.
+# Selects D (pydocstyle) with the Google convention, PGH004, RUF100,
+# and TD002 to TD005.
+
+[lint]
+select = ["D", "PGH004", "RUF100", "TD002", "TD003", "TD004", "TD005"]
+
+[lint.pydocstyle]
+convention = "google"

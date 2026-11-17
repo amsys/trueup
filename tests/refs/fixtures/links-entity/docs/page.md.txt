@@ -1,0 +1,5 @@
+# Page
+
+## Fish &amp; Chips
+
+See [entity](#fish--chips), [raw](#fish-amp-chips) and [gone](#missing-entity).

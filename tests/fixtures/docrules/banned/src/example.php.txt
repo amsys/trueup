@@ -1,0 +1,5 @@
+<?php
+// this comment holds the banned phrase silver bullet, on purpose
+function greet($name) {
+    return "hello " . $name;
+}

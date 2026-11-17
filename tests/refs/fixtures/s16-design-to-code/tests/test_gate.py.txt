@@ -1,0 +1,9 @@
+"""One test of the gate."""
+
+
+def test_gate_gives_a_verdict():
+    """The gate gives a verdict.
+
+    arch: D1.1
+    """
+    assert True

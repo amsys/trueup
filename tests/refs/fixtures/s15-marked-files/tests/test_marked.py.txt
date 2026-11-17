@@ -1,0 +1,14 @@
+"""Two tests of the gate. One test has a marker."""
+
+
+def test_gate_opens():
+    """The gate opens.
+
+    arch: D1.1
+    """
+    assert True
+
+
+def test_gate_closes():
+    """The gate closes."""
+    assert True

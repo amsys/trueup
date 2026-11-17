@@ -1,0 +1,4 @@
+// this comment holds the banned word synergy, on purpose
+fn greet(name: &str) -> String {
+    format!("hello {name}")
+}

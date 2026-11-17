@@ -1,0 +1,5 @@
+"""Give one number for the acceptance fixture."""
+
+
+def hidden():  # noqa: D103  # reason: the caller documents this function
+    return 2

@@ -1,0 +1,6 @@
+// Test the number helpers.
+
+const assert = require("assert");
+const { add } = require("../src/math");
+
+assert.strictEqual(add(1, 2), 3);

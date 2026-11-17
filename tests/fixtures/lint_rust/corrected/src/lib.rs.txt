@@ -1,0 +1,8 @@
+//! Give the sum of two numbers for the lint fixture.
+
+#[expect(missing_docs, reason = "the vendor generates the docs for this item")]
+pub fn total(a: u32, b: u32) -> u32 {
+    #[expect(clippy::identity_op, reason = "the zero keeps the vendor layout")]
+    let sum = a + b + 0;
+    sum
+}

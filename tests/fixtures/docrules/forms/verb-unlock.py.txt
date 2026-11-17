@@ -1,0 +1,5 @@
+# A fixture module for the D6.9 form test.
+
+# This upgrade will unlock new automation options for your team.
+def upgrade() -> None:
+    """Apply the upgrade."""

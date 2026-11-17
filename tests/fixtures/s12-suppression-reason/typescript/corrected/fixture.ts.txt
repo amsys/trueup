@@ -1,0 +1,8 @@
+/**
+ * @file Give the sum of two numbers for the acceptance fixture.
+ */
+
+// eslint-disable-next-line jsdoc/require-jsdoc -- the vendor generates this export
+export function total(a: number, b: number): number {
+  return a + b;
+}

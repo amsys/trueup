@@ -1,0 +1,60 @@
+idempotent
+upsert
+delve
+seamless
+robust
+comprehensive
+elevate
+unlock => unlock(?:s|ed|ing)? (?:new|your|untapped|hidden|the full|the power|the potential|the value)
+empower
+meticulous
+testament
+tapestry
+landscape
+realm
+embark
+journey
+crucial
+pivotal
+vital
+underscore => underscor(?:es|ed|ing) (?:the|a|an|its|their|our|this|that|these|those|your|his|her|my|it|them|every|all|how|why|what|by)|underscore (?:the|a|an|its|their|our|this|these|those|your|his|her|my|it|them|every|all|how|why|what)
+foster
+facilitate
+navigate
+streamline
+cutting-edge
+game-changer
+holistic
+synergy
+paradigm
+notably
+moreover
+furthermore
+it's worth noting
+in today's world
+footgun
+battle-tested
+production-ready
+rock-solid
+bulletproof
+blazingly fast
+world-class
+best-in-class
+state-of-the-art
+next-level
+deep dive
+dive into
+unpack
+supercharge
+low-hanging fruit
+no-brainer
+silver bullet
+utilize
+plethora
+myriad
+aforementioned
+elegant
+elegantly
+simply put
+great question
+leverage => to leverage|leverag(?:es|ed|ing)|(?:we|you|they|i|can|could|will|would|should|must|may|might) leverage|leverage (?:the|a|an|its|their|our|this|that|these|those|your|his|her|my|it|them|every|all|existing|new|modern|both|each|some|any|AI|LLMs?|machine learning)

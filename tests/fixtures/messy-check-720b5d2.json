@@ -1,0 +1,244 @@
+{
+  "findings": [
+    {
+      "action": "untrack the file and add it to .gitignore; rotate the secret, the history still holds it",
+      "auto": true,
+      "category": "security",
+      "evidence": "'.env' looks like a secret or key file",
+      "id": "secret-file:.env",
+      "path": ".env",
+      "rule": "secret-file",
+      "severity": "error"
+    },
+    {
+      "action": "keep one of data1.csv and data2.csv, or explain why both are needed",
+      "auto": false,
+      "category": "files",
+      "evidence": "same content as data1.csv",
+      "id": "duplicate:data2.csv",
+      "path": "data2.csv",
+      "rule": "duplicate",
+      "severity": "warn"
+    },
+    {
+      "action": "add 'vendor_bundle.js linguist-generated=true' to .gitattributes",
+      "auto": true,
+      "category": "files",
+      "evidence": "vendor_bundle.js carries a generated-file marker",
+      "id": "generated:vendor_bundle.js",
+      "path": "vendor_bundle.js",
+      "rule": "generated",
+      "severity": "warn"
+    },
+    {
+      "action": "git rm tmp-draft.md",
+      "auto": true,
+      "category": "files",
+      "evidence": "'tmp-draft.md' looks like a scratch file",
+      "id": "scratch:tmp-draft.md",
+      "path": "tmp-draft.md",
+      "rule": "scratch",
+      "severity": "error"
+    },
+    {
+      "action": "write .gitignore",
+      "auto": false,
+      "category": "health",
+      "evidence": "none of .gitignore is present",
+      "id": "health-gitignore:",
+      "path": "",
+      "rule": "health-gitignore",
+      "severity": "error"
+    },
+    {
+      "action": "add a LICENSE file",
+      "auto": false,
+      "category": "health",
+      "evidence": "required at T1, not at T0",
+      "id": "health-license:",
+      "path": "",
+      "rule": "health-license",
+      "severity": "info"
+    },
+    {
+      "action": "write README.md",
+      "auto": false,
+      "category": "health",
+      "evidence": "none of README.md is present",
+      "id": "health-readme:",
+      "path": "",
+      "rule": "health-readme",
+      "severity": "error"
+    },
+    {
+      "action": "append .scratch/ to .gitignore",
+      "auto": true,
+      "category": "setup",
+      "evidence": ".gitignore lacks .scratch/",
+      "id": "gitignore:.gitignore",
+      "path": ".gitignore",
+      "rule": "gitignore",
+      "severity": "error"
+    }
+  ],
+  "kept": [],
+  "moves": [],
+  "plan": [
+    {
+      "action": "untrack the file and add it to .gitignore; rotate the secret, the history still holds it",
+      "auto": true,
+      "category": "security",
+      "evidence": "'.env' looks like a secret or key file",
+      "id": "secret-file:.env",
+      "path": ".env",
+      "rule": "secret-file",
+      "severity": "error"
+    },
+    {
+      "action": "keep one of data1.csv and data2.csv, or explain why both are needed",
+      "auto": false,
+      "category": "files",
+      "evidence": "same content as data1.csv",
+      "id": "duplicate:data2.csv",
+      "path": "data2.csv",
+      "rule": "duplicate",
+      "severity": "warn"
+    },
+    {
+      "action": "add 'vendor_bundle.js linguist-generated=true' to .gitattributes",
+      "auto": true,
+      "category": "files",
+      "evidence": "vendor_bundle.js carries a generated-file marker",
+      "id": "generated:vendor_bundle.js",
+      "path": "vendor_bundle.js",
+      "rule": "generated",
+      "severity": "warn"
+    },
+    {
+      "action": "git rm tmp-draft.md",
+      "auto": true,
+      "category": "files",
+      "evidence": "'tmp-draft.md' looks like a scratch file",
+      "id": "scratch:tmp-draft.md",
+      "path": "tmp-draft.md",
+      "rule": "scratch",
+      "severity": "error"
+    },
+    {
+      "action": "write .gitignore",
+      "auto": false,
+      "category": "health",
+      "evidence": "none of .gitignore is present",
+      "id": "health-gitignore:",
+      "path": "",
+      "rule": "health-gitignore",
+      "severity": "error"
+    },
+    {
+      "action": "write README.md",
+      "auto": false,
+      "category": "health",
+      "evidence": "none of README.md is present",
+      "id": "health-readme:",
+      "path": "",
+      "rule": "health-readme",
+      "severity": "error"
+    },
+    {
+      "action": "append .scratch/ to .gitignore",
+      "auto": true,
+      "category": "setup",
+      "evidence": ".gitignore lacks .scratch/",
+      "id": "gitignore:.gitignore",
+      "path": ".gitignore",
+      "rule": "gitignore",
+      "severity": "error"
+    }
+  ],
+  "repins": [],
+  "score": {
+    "categories": {
+      "docs": 0.0,
+      "files": 20.0,
+      "health": 10.0,
+      "root": 0.0,
+      "security": 25.0
+    },
+    "raw": {
+      "docs": "0 paths",
+      "files": "3 of 6 files",
+      "health": "2 of 2 required",
+      "root": "0 entries, budget 8",
+      "security": "1 findings",
+      "setup": "1 findings"
+    },
+    "tier": "T0",
+    "total": 61
+  },
+  "survey": {
+    "files": [
+      ".env",
+      "CHANGELOG.md",
+      "data1.csv",
+      "data2.csv",
+      "tmp-draft.md",
+      "vendor_bundle.js"
+    ],
+    "has_ci": false,
+    "languages": {
+      "go": {
+        "code_lines": 0,
+        "files": 0,
+        "present": false
+      },
+      "php": {
+        "code_lines": 0,
+        "files": 0,
+        "present": false
+      },
+      "python": {
+        "code_lines": 0,
+        "files": 0,
+        "present": false
+      },
+      "rust": {
+        "code_lines": 0,
+        "files": 0,
+        "present": false
+      },
+      "shell": {
+        "code_lines": 0,
+        "files": 0,
+        "present": false
+      },
+      "sql": {
+        "code_lines": 0,
+        "files": 0,
+        "present": false
+      },
+      "typescript": {
+        "code_lines": 5,
+        "files": 1,
+        "present": false
+      },
+      "vue": {
+        "code_lines": 0,
+        "files": 0,
+        "present": false
+      }
+    },
+    "manifests": [],
+    "root_entries": [
+      ".env",
+      "CHANGELOG.md",
+      "data1.csv",
+      "data2.csv",
+      "tmp-draft.md",
+      "vendor_bundle.js"
+    ],
+    "tags": 0,
+    "tier": "T0",
+    "tier_reason": "T0 (5 or fewer language files, no manifest, no CI)",
+    "workspace": false
+  }
+}

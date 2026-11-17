@@ -1,0 +1,5 @@
+# Page
+
+Not a link: \[escaped\](missing-escaped.md).
+
+A link: [real](missing-real.md).

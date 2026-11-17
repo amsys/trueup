@@ -1,0 +1,7 @@
+## D3.1 — a heading id with no test
+
+Some text.
+
+## Verification
+
+D3.1 is claimed here, and no test in the tree cites it.

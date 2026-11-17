@@ -1,0 +1,10 @@
+# Managed by trueup. Edit trueup.toml, then run the trueup skill.
+[checks]
+registry = true
+comments = true
+links = true
+layout = true
+readme = true
+
+[scan]
+ignore = ["tests/fixtures/**", "trueup/templates/**"]

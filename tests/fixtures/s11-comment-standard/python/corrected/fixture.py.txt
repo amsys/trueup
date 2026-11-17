@@ -1,0 +1,6 @@
+"""Give the sum of two numbers for the acceptance fixture."""
+
+
+def total(a, b):
+    """Give the sum of a and b."""
+    return a + b

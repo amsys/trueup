@@ -1,0 +1,12 @@
+# Index
+
+Read [the guide](guide.md) and [its usage](guide.md#usage).
+Read [the setup](#setup) of this page.
+Read [the missing page](missing.md).
+Read [the missing heading](guide.md#install).
+An example in a code span is not a link: `[x](nowhere.md)`.
+Read [the site](https://example.com/nowhere).
+
+## Setup
+
+Set up the tree.

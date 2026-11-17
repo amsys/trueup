@@ -1,0 +1,11 @@
+---
+id: good
+type: reference
+audience:
+  - maintainer
+  - user
+status: current
+last_reviewed: 2026-09-22
+---
+
+# Good

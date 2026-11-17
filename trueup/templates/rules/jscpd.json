@@ -1,0 +1,13 @@
+{
+  "//": "Managed by trueup. Edit trueup.toml, then run the trueup skill. JSON allows no comment, so this key carries the header; the rendered lint/jscpd.json drops it and adds the formats of the strict languages.",
+  "gitignore": true,
+  "threshold": 3,
+  "minTokens": 100,
+  "exitCode": 1,
+  "ignore": [
+    "**/node_modules/**",
+    "**/vendor/**",
+    "**/target/**",
+    "**/.git/**"
+  ]
+}

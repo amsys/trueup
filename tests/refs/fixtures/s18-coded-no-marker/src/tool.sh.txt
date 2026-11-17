@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Print the answer of the no-marker fixture.
+echo 42

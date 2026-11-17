@@ -1,0 +1,4 @@
+[checks]
+registry = true
+comments = true
+links = true

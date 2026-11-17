@@ -1,0 +1,4 @@
+# Design of the portability copy
+
+This tree exists only to anchor `ROOT` for a copy of the checker under
+test. It holds no reference and no marker.

@@ -1,0 +1,14 @@
+# Design of the gate
+
+## D1.1 — The gate
+
+The gate reads one reference and gives one verdict.
+
+## D1.2 — The counter
+
+The counter counts the verdicts of the gate.
+
+## Verification
+
+- D1.1: the gate test proves the verdict.
+- D1.2: the gate test proves the count.

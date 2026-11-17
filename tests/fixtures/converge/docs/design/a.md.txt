@@ -1,0 +1,4 @@
+# Design A
+
+This note extends the [architecture](../ARCHITECTURE.md). See also
+[design B](b.md) and the [glossary](../glossary.md).

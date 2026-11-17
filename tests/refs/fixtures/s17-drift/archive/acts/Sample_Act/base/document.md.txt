@@ -1,0 +1,10 @@
+# Sample Act
+
+### 1. First section
+
+Old text of the first section.
+
+### 2. Second section
+
+Same text
+across lines.

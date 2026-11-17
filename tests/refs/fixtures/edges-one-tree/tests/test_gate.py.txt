@@ -1,0 +1,9 @@
+"""One test of the gate, for the edge file fixture."""
+
+
+def test_gate_closes() -> None:
+    """The gate gives a verdict and the counter counts it.
+
+    arch: D1.1, D1.2
+    """
+    assert True

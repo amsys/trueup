@@ -1,0 +1,13 @@
+"""The gate of the design id fixture."""
+
+
+def open_gate():
+    """Open the gate."""
+    # ref: arch/D1.1
+    return True
+
+
+def close_gate():
+    """Close the gate."""
+    # ref: arch/D9.9
+    return False

@@ -1,0 +1,3 @@
+# Traceability
+
+Each design note maps to one module in `src/`.

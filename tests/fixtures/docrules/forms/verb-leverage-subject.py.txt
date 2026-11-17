@@ -1,0 +1,5 @@
+# A fixture module for the D8.5 form test.
+
+# We leverage Redis for the hot path, so the cache is warm.
+def warm_cache() -> None:
+    """Warm the cache."""

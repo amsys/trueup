@@ -1,0 +1,5 @@
+pub fn total(a: u32, b: u32) -> u32 {
+    #[allow(clippy::identity_op)]
+    let sum = a + b + 0;
+    sum
+}

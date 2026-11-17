@@ -1,0 +1,6 @@
+<!-- Managed by trueup. Edit trueup.toml, then run the trueup skill. -->
+<!-- phpcs ruleset, strict mode: the whole Squiz.Commenting sniff group,
+     not only the three missing-comment sniffs of clean mode. -->
+<ruleset name="trueup-strict">
+    <rule ref="Squiz.Commenting"/>
+</ruleset>

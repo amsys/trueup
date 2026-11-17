@@ -1,0 +1,8 @@
+"""The test of the application, with no marker."""
+
+from src.app import main
+
+
+def test_main():
+    """The application gives the answer."""
+    assert main() == 42

@@ -1,0 +1,8 @@
+<!-- Managed by trueup. Edit trueup.toml, then run the trueup skill. -->
+<!-- phpcs ruleset, clean mode: the doc-comment sniffs of the Squiz
+     standard, so a missing file, class or function comment fails. -->
+<ruleset name="trueup-clean">
+    <rule ref="Squiz.Commenting.FileComment.Missing"/>
+    <rule ref="Squiz.Commenting.ClassComment.Missing"/>
+    <rule ref="Squiz.Commenting.FunctionComment.Missing"/>
+</ruleset>

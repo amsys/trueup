@@ -1,0 +1,6 @@
+# A fixture module for the D8.5 form test.
+
+# A leading underscore that marks a private name is kept as it is.
+def keep_private(name: str) -> str:
+    """Keep a private name."""
+    return name

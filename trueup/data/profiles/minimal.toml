@@ -1,0 +1,35 @@
+# The built-in profile "minimal" (D14.1, D14.2). It keeps the hygiene
+# rows and the link check, and turns off the house rules for the page
+# layout, the banned words, the marker registry, the comment check, the
+# agent rules file and the .scratch/ line. A key that is not here has its
+# house value.
+
+docs = "readme"               # auto | full | readme
+
+[layout]
+docs_dir = "docs"             # the directory of the documentation pages
+front_matter = false          # pages need no front matter
+types = false                 # pages need not sit in the Diataxis type directories
+index = false                 # pages need no link from an index
+
+[prose]
+banned = "off"                # no banned-word list
+extra = []                    # banned-word entries; with banned = "off" they are the list
+
+[refs]
+registry = false              # no registry check
+comments = false              # no comment check
+links = true                  # the link check runs
+
+[health]
+agents = false                # no rows for the agent rules file
+files = "readme"              # only the README is required
+
+[scratch]
+gitignore = false             # the .gitignore row does not ask for .scratch/
+
+[python]
+pydoclint_baseline = "lint/python/pydoclint-baseline.txt"
+
+[eslint]
+suppressions = "lint/typescript/eslint-suppressions.json"

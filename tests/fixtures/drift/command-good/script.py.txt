@@ -1,0 +1,1 @@
+"""Fixture script for the D6.5 drift-command rule (test_drift.py)."""

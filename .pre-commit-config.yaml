@@ -1,0 +1,15 @@
+# Pre-commit hooks of the trueup repository. The repository owns this file.
+repos:
+  - repo: local
+    hooks:
+      - id: ref-check
+        name: ref_check
+        entry: python3 trueup/ref_check.py --root .
+        language: system
+        pass_filenames: false
+      - id: trueup-lint
+        name: trueup lint
+        entry: trueup lint
+        language: system
+        pass_filenames: true
+        require_serial: true

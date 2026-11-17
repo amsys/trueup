@@ -1,0 +1,5 @@
+# A fixture module for the D6.9 form test.
+
+# The plugin harness loads each extension in its own process.
+def run_in_harness(ext: object) -> None:
+    """Run one extension in its own process."""

@@ -1,0 +1,6 @@
+//! Read the notes file of the user.
+
+/// Give the name of the notes file.
+pub fn notes_name() -> &'static str {
+    "notes.txt"
+}

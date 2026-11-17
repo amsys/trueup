@@ -1,0 +1,13 @@
+# Page
+
+Text before the code.
+
+    [gone](missing-indented.md)
+
+    [gone](missing-indented-2.md)
+A paragraph after the code: [after](missing-after-code.md).
+    [continued](missing-continued.md)
+
+- An item.
+
+    [in the item](missing-list.md)

@@ -1,0 +1,17 @@
+"""Tests of the gate for the edge file fixture."""
+
+
+def test_gate_counts():
+    """The gate gives a verdict and the counter counts it.
+
+    arch: D1.1, D1.2
+    """
+    assert True
+
+
+def test_gate_imports():
+    """The module imports.
+
+    arch: none
+    """
+    assert True

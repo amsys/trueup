@@ -1,0 +1,4 @@
+select a
+FROM t;
+select b
+FROM u; -- noqa: CP01

@@ -1,0 +1,9 @@
+"""One test of the gate, for the end-to-end run of the checker."""
+
+
+def test_gate_closes() -> None:
+    """The gate gives a verdict.
+
+    arch: D1.1
+    """
+    assert True

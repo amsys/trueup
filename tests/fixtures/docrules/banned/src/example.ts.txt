@@ -1,0 +1,4 @@
+// this comment holds the banned word paradigm, on purpose
+export function greet(name: string): string {
+  return `hello ${name}`;
+}

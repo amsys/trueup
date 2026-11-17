@@ -1,0 +1,20 @@
+# Managed by trueup. Edit trueup.toml, then run the trueup skill.
+# phpstan config, strict mode: the maximum analysis level, phpstan's own
+# strict-rules extension, and a failure when an ignore entry no longer
+# matches an error. phpstan resolves a relative path from the directory of
+# this file, and trueup lint writes this file to a temporary directory.
+# Thus each path starts with the root token, which trueup lint replaces
+# with the repository root.
+
+includes:
+    - __TRUEUP_ROOT__/vendor/phpstan/phpstan-strict-rules/rules.neon
+
+parameters:
+    level: max
+    reportUnmatchedIgnoredErrors: true
+    paths:
+        - __TRUEUP_ROOT__
+    excludePaths:
+        analyseAndScan:
+            - __TRUEUP_ROOT__/vendor (?)
+            - __TRUEUP_ROOT__/node_modules (?)

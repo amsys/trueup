@@ -1,0 +1,14 @@
+- id: trueup-baseline
+  name: trueup baseline gate
+  description: "Fail on a new finding, a score rise, or a ratchet drop against .trueup-baseline.json (D6.7)"
+  entry: trueup check --baseline --root .
+  language: python
+  pass_filenames: false
+  always_run: true
+- id: trueup-lint
+  name: trueup lint
+  description: "Lint the staged files with the rule sets of the effective config (D14.6)"
+  entry: trueup lint
+  language: python
+  pass_filenames: true
+  require_serial: true

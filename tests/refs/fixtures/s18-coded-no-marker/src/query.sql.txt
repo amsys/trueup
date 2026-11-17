@@ -1,0 +1,2 @@
+-- Give the answer of the no-marker fixture.
+SELECT 42;

@@ -1,0 +1,8 @@
+//! Give the sum of two numbers for the acceptance fixture.
+
+/// Give the sum of `a` and `b`.
+pub fn total(a: u32, b: u32) -> u32 {
+    #[allow(clippy::identity_op, reason = "the zero keeps the vendor layout")]
+    let sum = a + b + 0;
+    sum
+}

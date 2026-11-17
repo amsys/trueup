@@ -1,0 +1,10 @@
+"""Give two numbers for the lint fixture."""
+
+
+def exposed():
+    """Give the first number."""
+    return 1
+
+
+def hidden():  # noqa: D103  # reason: the caller documents this function
+    return 2

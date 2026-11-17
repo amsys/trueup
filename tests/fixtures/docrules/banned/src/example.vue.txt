@@ -1,0 +1,4 @@
+<template>
+  <!-- this comment holds the banned word holistic, on purpose -->
+  <p>hello</p>
+</template>

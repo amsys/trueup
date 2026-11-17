@@ -1,0 +1,6 @@
+# A fixture module for the D8.5 form test.
+
+# A longer arm gives the operator more leverage on the bolt.
+def lever_ratio(arm: float) -> float:
+    """Give the ratio of the arm."""
+    return arm

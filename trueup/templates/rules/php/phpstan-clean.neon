@@ -1,0 +1,14 @@
+# Managed by trueup. Edit trueup.toml, then run the trueup skill.
+# phpstan config, clean mode: analysis level 6 over the repository. phpstan
+# resolves a relative path from the directory of this file, and trueup lint
+# writes this file to a temporary directory. Thus each path starts with
+# the root token, which trueup lint replaces with the repository root.
+
+parameters:
+    level: 6
+    paths:
+        - __TRUEUP_ROOT__
+    excludePaths:
+        analyseAndScan:
+            - __TRUEUP_ROOT__/vendor (?)
+            - __TRUEUP_ROOT__/node_modules (?)

@@ -1,0 +1,5 @@
+# Page
+
+See [root](/docs/other.md), [part](/docs/other.md#part) and [dir](/docs).
+
+See [gone](/docs/missing-root.md) and [out](/../outside.md).

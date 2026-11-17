@@ -1,0 +1,8 @@
+//! arch: D1.1
+
+/// arch: D1.2
+/// NOTE: a tag in a doc comment is prose.
+pub fn item() {}
+
+// ref: arch/D1.1
+pub fn other() {}

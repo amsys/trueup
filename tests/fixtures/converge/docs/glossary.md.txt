@@ -1,0 +1,3 @@
+# Glossary
+
+fold: add two values into one sum.

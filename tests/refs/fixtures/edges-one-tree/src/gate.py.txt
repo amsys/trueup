@@ -1,0 +1,11 @@
+"""The gate and its counter, for the edge file fixture."""
+
+
+def open_gate() -> bool:
+    # ref: arch/D1.2
+    return True
+
+
+def count_gate() -> int:
+    # ref: arch/D9.9
+    return 1

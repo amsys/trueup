@@ -1,0 +1,5 @@
+# Page
+
+See [paren](file_(x).md) and [titled](file_(x).md "A title").
+
+See [gone](gone_(y).md).

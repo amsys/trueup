@@ -1,0 +1,8 @@
+# Fenced only
+
+The only banned word in this file sits inside a fenced block, so this file
+must not produce a finding.
+
+```
+utilize is banned, but this whole block is code, not prose
+```

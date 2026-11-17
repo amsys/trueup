@@ -1,0 +1,19 @@
+"""The gate of the closed registry fixture."""
+
+
+def open_gate():
+    """Open the gate."""
+    # FIXME: the gate never closes
+    return True
+
+
+def close_gate():
+    """Close the gate."""
+    # refs: arch/D1.1
+    return False
+
+
+def count_gate():
+    """Count the gate."""
+    # TODO(martin): count in a table, see docs/plan.md
+    return 1

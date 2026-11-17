@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Print the first argument of the acceptance fixture.
+echo "$1"

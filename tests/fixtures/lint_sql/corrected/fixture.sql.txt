@@ -1,0 +1,3 @@
+-- Give one column of the fixture table.
+select a
+FROM t; /* the vendor fixes this case */ -- noqa: CP01

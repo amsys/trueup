@@ -1,0 +1,9 @@
+---
+id: brief
+type: explanation
+audience: [maintainer, agent]
+status: current
+last_reviewed: 2026-09-22
+---
+
+# Brief

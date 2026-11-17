@@ -1,0 +1,5 @@
+# A fixture module for the D8.5 form test.
+
+# This module lets you leverage the existing cache for every request.
+def use_cache() -> None:
+    """Use the cache."""

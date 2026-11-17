@@ -1,0 +1,12 @@
+{
+  "name": "trueup",
+  "owner": { "name": "Martin" },
+  "plugins": [
+    {
+      "name": "trueup",
+      "source": "./",
+      "description": "Repository hygiene, documentation standard and lint rule sets, run as a Claude Code plugin.",
+      "version": "0.1.0-alpha.1"
+    }
+  ]
+}

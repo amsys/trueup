@@ -1,0 +1,6 @@
+# A fixture module for the D6.9 form test.
+
+# A filename starting with an underscore is treated as a private module.
+def is_private(name: str) -> bool:
+    """Say whether a module name marks itself private."""
+    return name.startswith("_")

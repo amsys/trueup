@@ -1,0 +1,4 @@
+"""Module.
+
+# law: acts/Sample_Act/base s.1
+"""

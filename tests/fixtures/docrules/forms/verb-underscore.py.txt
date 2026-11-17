@@ -1,0 +1,5 @@
+# A fixture module for the D6.9 form test.
+
+# This result underscores the urgent need for careful review.
+def review_result() -> None:
+    """Review the result."""

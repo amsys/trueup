@@ -1,0 +1,5 @@
+# A fixture module for the D6.9 form test.
+
+# This library helps you harness the power of concurrent tests.
+def run_tests() -> None:
+    """Run the test suite."""

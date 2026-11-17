@@ -1,0 +1,3 @@
+# Ideas
+
+Add a product fold next to the sum fold.

@@ -1,0 +1,5 @@
+# A fixture module for the D8.5 form test.
+
+# This result underscores your point about the cache.
+def note_result() -> None:
+    """Note the result."""

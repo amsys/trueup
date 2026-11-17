@@ -1,0 +1,3 @@
+# Running
+
+Run `cargo run` to start the fold.

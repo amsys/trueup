@@ -1,0 +1,2 @@
+// ref: arch/D1.1
+export const x = 1;

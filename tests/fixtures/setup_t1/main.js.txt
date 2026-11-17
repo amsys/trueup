@@ -1,0 +1,105 @@
+// The entry point of the small tool: it prints sums and joined words.
+
+const { add } = require("./src/math");
+const { join } = require("./src/text");
+
+function step1(value) {
+  return add(value, 1);
+}
+function step2(value) {
+  return add(value, 2);
+}
+function step3(value) {
+  return add(value, 3);
+}
+function step4(value) {
+  return add(value, 4);
+}
+function step5(value) {
+  return add(value, 5);
+}
+function step6(value) {
+  return add(value, 6);
+}
+function step7(value) {
+  return add(value, 7);
+}
+function step8(value) {
+  return add(value, 8);
+}
+function step9(value) {
+  return add(value, 9);
+}
+function step10(value) {
+  return add(value, 10);
+}
+function step11(value) {
+  return add(value, 11);
+}
+function step12(value) {
+  return add(value, 12);
+}
+// arch: D99.1
+function step13(value) {
+  return add(value, 13);
+}
+function step14(value) {
+  return add(value, 14);
+}
+function step15(value) {
+  return add(value, 15);
+}
+function step16(value) {
+  return add(value, 16);
+}
+function step17(value) {
+  return add(value, 17);
+}
+function step18(value) {
+  return add(value, 18);
+}
+function step19(value) {
+  return add(value, 19);
+}
+function step20(value) {
+  return add(value, 20);
+}
+function step21(value) {
+  return add(value, 21);
+}
+function step22(value) {
+  return add(value, 22);
+}
+function step23(value) {
+  return add(value, 23);
+}
+function step24(value) {
+  return add(value, 24);
+}
+
+let total = 0;
+total = step1(total);
+total = step2(total);
+total = step3(total);
+total = step4(total);
+total = step5(total);
+total = step6(total);
+total = step7(total);
+total = step8(total);
+total = step9(total);
+total = step10(total);
+total = step11(total);
+total = step12(total);
+total = step13(total);
+total = step14(total);
+total = step15(total);
+total = step16(total);
+total = step17(total);
+total = step18(total);
+total = step19(total);
+total = step20(total);
+total = step21(total);
+total = step22(total);
+total = step23(total);
+total = step24(total);
+console.log(join(["total", String(total)]));

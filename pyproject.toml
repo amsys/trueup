@@ -1,0 +1,43 @@
+[project]
+name = "trueup"
+version = "0.1.0a1"
+description = "A repository hygiene check: documents, comments, scratch files, secrets and health files, with findings you approve by id."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Martin", email = "dev@amsys.cz" }]
+keywords = ["repository", "hygiene", "documentation", "lint", "claude-code"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+[project.urls]
+Homepage = "https://github.com/amsys/trueup"
+Issues = "https://github.com/amsys/trueup/issues"
+Changelog = "https://github.com/amsys/trueup/blob/main/CHANGELOG.md"
+
+[project.scripts]
+trueup = "trueup.cli:main"
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["trueup"]
+
+[tool.setuptools.package-data]
+trueup = ["data/**/*", "templates/**/*", "templates/**/.*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

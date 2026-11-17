@@ -1,0 +1,12 @@
+#!/bin/sh
+# Write a small Python file.
+cat > out.py <<PY
+# arch: D9.9
+# shellcheck disable=SC2086
+PY
+cat > more.py <<-'END'
+	# arch: D9.8
+	END
+echo $((1 << 2))
+# shellcheck disable=SC2034
+# ref: arch/D7.7

@@ -1,0 +1,6 @@
+# A fixture module for the D6.9 form test.
+
+# Run keepassxc-cli to unlock the vault before reading the secret.
+def read_secret() -> str:
+    """Read the secret from the unlocked vault."""
+    return ""

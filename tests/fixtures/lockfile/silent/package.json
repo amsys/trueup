@@ -1,0 +1,7 @@
+{
+  "name": "silent",
+  "private": true,
+  "dependencies": {
+    "left-pad": "^1.0.0"
+  }
+}

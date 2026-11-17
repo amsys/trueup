@@ -1,0 +1,7 @@
+# Guide
+
+Read [the usage](#usage) first.
+
+## Usage
+
+Run the application.

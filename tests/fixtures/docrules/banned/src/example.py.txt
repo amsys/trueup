@@ -1,0 +1,16 @@
+"""A fixture module for the docrules banned-word test."""
+
+# this comment holds the banned word plethora, on purpose
+def greet(name: str) -> str:
+    """Say hello.
+
+    The word plethora above lives in a comment, not here, so the docstring
+    below stays clean: it says hello and nothing else.
+
+    Args:
+        name: The name to greet.
+
+    Returns:
+        A greeting.
+    """
+    return f"hello {name}"

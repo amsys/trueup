@@ -1,0 +1,17 @@
+# Design
+
+## D1.1 — Gate
+
+Text.
+
+## D1.2 — Ledger
+
+Text.
+
+## Invariants
+
+- **I-1 Fail closed.** Text.
+
+## Verification
+
+Unit proves D1.1, D1.2 and I-1.

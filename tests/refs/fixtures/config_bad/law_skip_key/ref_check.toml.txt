@@ -1,0 +1,3 @@
+[targets.law]
+archive = "../lawsmu/archive"
+skip = ["s.111"]

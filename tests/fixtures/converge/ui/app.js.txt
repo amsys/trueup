@@ -1,0 +1,4 @@
+// Show the sum on the page.
+export function show(total) {
+  return `sum: ${total}`;
+}

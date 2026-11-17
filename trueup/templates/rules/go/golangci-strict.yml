@@ -1,0 +1,44 @@
+# Managed by trueup. Edit trueup.toml, then run the trueup skill.
+# golangci-lint v2 config, strict mode: every linter except the ones that
+# need per-project input or are deprecated, with the shared thresholds
+# (cognitive 15, cyclomatic 10, function 60 lines, 5 parameters, nesting
+# 4, duplication 100 tokens). unused and unparam find dead code. gosec
+# (SAST, D7.5) is already on: `default: all` enables it and nothing
+# below disables it.
+version: "2"
+linters:
+  default: all
+  disable:
+    - depguard  # needs a project-specific import list
+    - exhaustruct  # too noisy for option structs
+    - wsl  # deprecated, replaced by wsl_v5
+    - gomodguard  # deprecated, replaced by gomodguard_v2
+  settings:
+    gocognit:
+      min-complexity: 15
+    cyclop:
+      max-complexity: 10
+    funlen:
+      lines: 60
+      statements: 40
+    nestif:
+      min-complexity: 4
+    dupl:
+      threshold: 100
+    lll:
+      line-length: 120
+    nolintlint:
+      allow-unused: false
+      require-explanation: true
+      require-specific: true
+    revive:
+      enable-default-rules: true
+      rules:
+        - name: exported
+        - name: package-comments
+        - name: argument-limit
+          arguments: [5]
+        - name: max-control-nesting
+          arguments: [4]
+formatters:
+  enable: [gofmt, gofumpt, goimports]

@@ -1,0 +1,10 @@
+Setext Title
+============
+
+Sub Part
+--------
+
+- list item
+---
+
+See [title](#setext-title), [sub](#sub-part), [item](#list-item) and [gone](#missing-setext).

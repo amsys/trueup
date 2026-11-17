@@ -1,0 +1,2 @@
+-- this comment holds the banned word aforementioned, on purpose
+SELECT 1;

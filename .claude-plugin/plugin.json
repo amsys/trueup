@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "trueup",
+  "version": "0.1.0-alpha.1",
+  "description": "Repository hygiene, documentation standard and lint rule sets, run as a Claude Code plugin.",
+  "author": { "name": "Martin" },
+  "homepage": "https://github.com/amsys/trueup",
+  "repository": "https://github.com/amsys/trueup",
+  "license": "MIT"
+}

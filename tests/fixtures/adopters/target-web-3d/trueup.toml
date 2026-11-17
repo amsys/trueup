@@ -1,0 +1,44 @@
+# Snapshot of target-web/3d/trueup.toml, copied 2026-11-04 by scripts/sync_adopters.py; do not edit.
+# trueup configuration. The trueup skill writes this file. A person can edit it.
+version = 1
+run_date = "2026-10-16"
+tier = "auto"                # auto | T0 | T1 | T2 | T3
+public = false                # true adds C1, C2 and the public health files
+docs = "auto"                # auto | full | readme
+stale_days = 180                # P8
+ignore = [".state/**", "public/vendor/**"]   # run records and vendored three.js; globs left out of the survey and all findings
+protect = []                 # globs that apply never changes or removes
+
+[root]
+allow = []                   # root entries allowed beyond the base list (D5.8)
+
+[scratch]
+allow = [".state/runs/*/scratch-args-*.json"]                   # paths or names the scratch rule lets through (D5.8)
+
+[layout]
+code_dirs = ["memory"]
+
+[binary]
+allow = ["renders/**", "public/env/**", "public/panel/worker.glb"]   # env maps and ground textures of the viewer (sky stage mode, 2026-10-16); worker figure GLB (2026-10-17)
+
+[refs]
+layout = false
+
+[languages]                  # one key per language: strict | clean | off
+typescript = "clean"
+
+[[keep]]                     # a finding the person declined, with the reason
+id = "health-license:"
+reason = "private repository, no licence granted (owner, 2026-10-16)"
+
+[[keep]]                     # a finding the person declined, with the reason
+id = "refcheck:README.md:1:no-licence-file"
+reason = "private repository, no licence granted (owner, 2026-10-16)"
+
+[[eslint.off]]
+rule = "security/detect-non-literal-fs-filename"
+reason = "Node tools read and write their own repo files by computed paths"
+
+[[eslint.off]]
+rule = "security/detect-object-injection"
+reason = "numeric code indexes objects by computed keys; the rule flags each lookup"

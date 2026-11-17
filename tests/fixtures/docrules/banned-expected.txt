@@ -1,0 +1,19 @@
+# What the banned-word test expects of the fixture tree in banned/.
+# One check per line, fields split by a TAB:
+#   <path> present <word> <line>: the prose finding of <path> names <word>
+#     at <line>, its first line in that file.
+#   <path> absent <word>: <word> is not in the evidence of <path>.
+#   <path> absent *: <path> has no prose finding at all.
+README.md	present	leverage	3
+README.md	absent	robust
+README.md	absent	utilize
+fenced-only.md	absent	*
+inline-only.md	absent	*
+src/example.py	present	plethora	3
+src/example.rs	present	synergy	1
+src/example.ts	present	paradigm	1
+src/example.vue	present	holistic	2
+src/example.sh	present	footgun	2
+src/example.sql	present	aforementioned	1
+src/example.go	present	cutting-edge	3
+src/example.php	present	silver bullet	2

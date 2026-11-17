@@ -1,0 +1,9 @@
+{
+  "name": "small-tool",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "test": "node test/math.test.js && node test/text.test.js"
+  }
+}

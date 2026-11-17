@@ -1,0 +1,7 @@
+# osv-scanner configuration for the eslint packages of this directory.
+# Each entry gives the reason and an end date, so the scan reports it again.
+
+[[IgnoredVulns]]
+id = "GHSA-g3hv-75wg-m249"
+ignoreUntil = 2027-02-16T00:00:00Z
+reason = "minimatch 10 comes with eslint, which lints only the files of this repository, so no glob from another person reaches it. eslint does not accept the fixed minimatch 11.0.1 yet."

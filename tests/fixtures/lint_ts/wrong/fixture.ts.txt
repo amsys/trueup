@@ -1,0 +1,9 @@
+export function total(a: number, b: number): number {
+  // @ts-expect-error
+  return a + b;
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export function double(a: number): number {
+  return a * 2;
+}

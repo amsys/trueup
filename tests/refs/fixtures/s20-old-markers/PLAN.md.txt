@@ -1,0 +1,3 @@
+| id | rulings | what | files | done-check | tier | state |
+|---|---|---|---|---|---|---|
+| T1 | | D1.2: the ledger | src/x.py | pytest | S | done |

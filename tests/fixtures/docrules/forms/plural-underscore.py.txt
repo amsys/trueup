@@ -1,0 +1,6 @@
+# A fixture module for the D6.9 form test.
+
+# Two underscores separate the prefix from the suffix in this name.
+def split_on_underscores(name: str) -> list[str]:
+    """Split a name on its underscore-separated parts."""
+    return name.split("_")

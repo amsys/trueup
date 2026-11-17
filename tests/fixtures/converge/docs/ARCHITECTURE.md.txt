@@ -1,0 +1,3 @@
+# Architecture
+
+The fold module adds the values. The UI shows the sum.

@@ -1,0 +1,3 @@
+# Design B
+
+The UI reads the sum from the fold module.

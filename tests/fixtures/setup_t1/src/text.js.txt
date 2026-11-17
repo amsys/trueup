@@ -1,0 +1,7 @@
+// Text helpers.
+
+function join(words) {
+  return words.join(" ");
+}
+
+module.exports = { join };

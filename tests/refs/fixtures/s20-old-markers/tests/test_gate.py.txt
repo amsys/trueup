@@ -1,0 +1,12 @@
+def test_gate_closes():
+    """arch: D1.1, I-1 - the gate fails closed."""
+    assert True
+
+
+def test_bad():
+    """arch: D9.9 - stale."""
+    assert True
+
+
+def test_unmarked():
+    assert True

@@ -1,0 +1,3 @@
+-- Give one column of the fixture table.
+SELECT a
+FROM t;

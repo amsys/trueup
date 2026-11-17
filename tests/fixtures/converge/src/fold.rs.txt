@@ -1,0 +1,6 @@
+//! Fold a list of numbers into one sum.
+
+/// Give the sum of all values.
+pub fn fold(values: &[i64]) -> i64 {
+    values.iter().sum()
+}

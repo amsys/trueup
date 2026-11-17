@@ -1,0 +1,6 @@
+"""The lamp, for the read-only fixture."""
+
+
+def open_lamp() -> bool:
+    # ref: arch/D1.1
+    return True

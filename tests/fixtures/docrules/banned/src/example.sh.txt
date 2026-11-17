@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# this comment holds the banned word footgun, on purpose
+echo "hello"

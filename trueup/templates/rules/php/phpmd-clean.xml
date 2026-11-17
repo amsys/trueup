@@ -1,0 +1,6 @@
+<!-- Managed by trueup. Edit trueup.toml, then run the trueup skill. -->
+<!-- phpmd ruleset, clean mode: the unused-code rule set (dead private
+     methods, parameters, local variables). -->
+<ruleset name="trueup-clean">
+    <rule ref="rulesets/unusedcode.xml"/>
+</ruleset>

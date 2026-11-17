@@ -1,0 +1,9 @@
+# Design of the lamp
+
+## D1.1 — The lamp
+
+The lamp reads one reference and gives one verdict.
+
+## Verification
+
+- D1.1: the lamp test proves the verdict.

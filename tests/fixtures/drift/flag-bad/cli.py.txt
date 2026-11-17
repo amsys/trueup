@@ -1,0 +1,15 @@
+"""Tiny CLI fixture for the D6.5 drift-flag rule (test_drift.py)."""
+
+import argparse
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """Build the fixture's own two-flag parser.
+
+    Returns:
+        A parser with `--root` and `--json`.
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root")
+    parser.add_argument("--json", action="store_true")
+    return parser

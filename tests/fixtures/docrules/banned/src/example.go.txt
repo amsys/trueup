@@ -1,0 +1,6 @@
+package example
+
+// this comment holds the banned word cutting-edge, on purpose
+func Greet(name string) string {
+	return "hello " + name
+}

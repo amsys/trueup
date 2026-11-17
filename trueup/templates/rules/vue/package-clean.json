@@ -1,0 +1,8 @@
+{
+  "//": "Managed by trueup. Edit trueup.toml, then run the trueup skill. The devDependencies the Vue block adds, clean mode. The TypeScript block, always rendered alongside this one, already carries eslint-plugin-security (SAST, D7.5), so this fragment adds no second copy. JSON allows no comment, so this key carries the header; the rendered package.json drops it.",
+  "devDependencies": {
+    "eslint-plugin-vue": "^10.11.1",
+    "vue-eslint-parser": "^10.4.1",
+    "vue-tsc": "^3.3.0"
+  }
+}

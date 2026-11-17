@@ -1,0 +1,9 @@
+"""One test of the lamp, for the read-only fixture."""
+
+
+def test_lamp_opens() -> None:
+    """The lamp gives a verdict.
+
+    arch: D1.1
+    """
+    assert True

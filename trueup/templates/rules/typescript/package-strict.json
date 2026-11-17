@@ -1,0 +1,13 @@
+{
+  "//": "Managed by trueup. Edit trueup.toml, then run the trueup skill. The devDependencies of the TypeScript block, strict mode: the clean set (with eslint-plugin-security for SAST, D7.5) plus sonarjs and knip. JSON allows no comment, so this key carries the header; the rendered package.json drops it.",
+  "devDependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",
+    "eslint": "^10.0.0",
+    "eslint-plugin-jsdoc": "^65.2.0",
+    "eslint-plugin-security": "^4.2.0",
+    "eslint-plugin-sonarjs": "^4.2.2",
+    "knip": "^6.40.0",
+    "typescript": "^5.7.0 || ^6.0.0",
+    "typescript-eslint": "^8.71.0"
+  }
+}

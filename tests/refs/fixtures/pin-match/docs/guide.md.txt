@@ -1,0 +1,13 @@
+# Guide
+
+## The rule
+
+Text of the rule.
+
+### A sub-heading
+
+More text.
+
+## Next
+
+Other text.

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+echo $1
+# shellcheck disable=SC2086
+echo $2

@@ -1,0 +1,70 @@
+# The built-in profile "house" (D14.1). It is the full trueup standard. A
+# layer names it with profile = "house"; an adopted target with no profile
+# name also gets it (D15.6). Each key has its default value, so this file
+# also documents the keys that a profile can set.
+#
+# A profile cannot set version, run_date, [[keep]] or profile. The keys
+# below that are in comments have no value to write here: [root] base is
+# absent by default (the guard hook uses its own base list; base = "code"
+# sets that list again over a lower layer), [refs] path needs
+# mode = "copy", [refs] layout cannot stand beside the three [layout]
+# switches, and [[eslint.off]] has no entry by default. A layer that sets
+# [[eslint.off]], or [eslint] off = [], replaces the lower list (D15.29).
+
+tier = "auto"                 # auto | T0 | T1 | T2 | T3
+public = false                # true adds C1, C2 and the public health files
+docs = "auto"                 # auto | full | readme
+stale_days = 180              # days until a current page is stale (P8)
+ignore = []                   # globs left out of the survey and all findings
+protect = []                  # globs that apply never changes or removes
+
+[root]
+allow = []                    # root entries allowed beyond the base list (D5.8)
+# base = []                   # replaces the base list of the guard hook (D14.2)
+
+[scratch]
+allow = []                    # paths or names the scratch rule lets through (D5.8)
+gitignore = true              # true: the .gitignore row asks for the .scratch/ line
+
+[guard]
+registry = false              # true: the install guard looks up each package name on the public registry
+private_packages = []         # package-name globs the install guard never looks up
+
+[layout]
+code_dirs = []                # directories of Markdown-as-code, not pages (D13.1)
+docs_dir = "docs"             # the directory of the documentation pages
+front_matter = true           # true: each page needs front matter
+types = true                  # true: the pages sit in the Diataxis type directories
+index = true                  # true: an index links each page
+
+[binary]
+allow = []                    # binary files kept on purpose (D13.2)
+
+[prose]
+banned = "builtin"            # builtin | off | a banned-word file
+extra = []                    # banned-word entries added to the list
+
+[refs]
+mode = "global"               # global: the hook runs trueup refs; copy: a checker copy
+# path = "ref_check.py"       # the checker module, in copy mode only
+local_tags = []               # the project's own tag prefixes (D8.7)
+# layout = true               # the older key for the three [layout] switches
+registry = true               # true: the checker runs its registry check
+comments = true               # true: the checker runs its comment check
+links = true                  # true: the checker runs its link check
+
+[health]
+agents = true                 # true: the agent rules file rows run
+files = "tier"                # tier | readme: which health files are required
+
+[python]
+pydoclint_baseline = "lint/python/pydoclint-baseline.txt"
+
+[languages]                   # one key per language: strict | clean | off
+
+[eslint]
+suppressions = "lint/typescript/eslint-suppressions.json"
+
+# [[eslint.off]]              # one entry per eslint rule that is off
+# rule = "no-console"         # the eslint rule name
+# reason = "the CLI prints"   # why the rule is off, one line
