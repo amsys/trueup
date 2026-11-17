@@ -34,8 +34,8 @@ jobs:
           echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  gitleaks.tar.gz" | sha256sum -c -
           sudo tar -xzf gitleaks.tar.gz -C /usr/local/bin gitleaks
       # install the tools of your languages here, one line per family
-      - run: 'pip install ruff'
-      - run: 'pip install vale'
+      # The versions are the ones that the trueup CI template pins.
+      - run: pip install ruff==0.15.9 vale==3.26.0.1
       - run: sudo apt-get update && sudo apt-get install -y shellcheck
       - run: npm ci --prefix lint/ts
       # The trueup-lint hook runs trueup lint once here. Do not add a second run.
