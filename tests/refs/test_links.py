@@ -504,7 +504,7 @@ def test_check_g_reads_the_markdown_files_at_the_root(tmp_path):
 ROOT = Path(__file__).resolve().parents[2]
 """The root of this repository."""
 
-REPOSITORY_PINS = {"README.md": 4, "CONTRIBUTING.md": 1}
+REPOSITORY_PINS = {"README.md": 2, "CONTRIBUTING.md": 1}
 """The count of pins that each root page of this repository holds."""
 
 
