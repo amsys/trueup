@@ -1832,7 +1832,8 @@ full weight of 25). FP-6 is fixed in `ref_check.py` and re-copied into this repo
 but target-mixed/src's own `ref_check.toml` does not yet set `local_tags`
 (see [Follow-ups](#follow-ups)), so its score does not move in the
 Calibration table above. The raw trial record, with the evidence for every
-row, lives at `.state/runs/trueup-v2/00-field-trial.md`.
+row, is `.state/runs/trueup-v2/00-field-trial.md`, a private work record
+of the maintainer that is not in this repository.
 
 ## Baseline
 

@@ -3,16 +3,54 @@ id: purpose-and-state
 type: explanation
 audience: [maintainer, agent]
 status: draft
-last_reviewed: 2026-11-09
+last_reviewed: 2026-11-18
 ---
 
 # Purpose and state of trueup
 
-This page says what trueup is for, what it is today, and what the
-evidence of 2026-10-12 shows. It ends with a plan. Every number comes
-from a command that ran on this machine on that date; the last section
-lists the commands. The page reads the working tree, which holds round 3
-and round 4 uncommitted on commit `257ca52`.
+This page is a dated record. The maintainer wrote it on 2026-10-12, as a
+critical review of trueup before it was public, and added a status
+section after each later round of work. It says what trueup is for, what
+the evidence of that date showed, and what plan followed.
+
+## Read this first
+
+Much of the text below describes a state that is in the past. The state
+on 2026-11-18 is this:
+
+- trueup is public at <https://github.com/amsys/trueup>, with the tag
+  `v0.1.0a1`. The text below says "no remote, no tag" up to 2026-11-09;
+  that is no longer true.
+- CI runs on each push, on Python 3.11 and 3.14.
+- The plugin is installed and in daily use on the maintainer's machine.
+  Nobody else has confirmed an install yet.
+- Each of the ten findings F1 to F10 has a later status below. Read the
+  status sections, the newest last, before you rely on a finding.
+
+Some words need an explanation:
+
+- **The owner** is the maintainer of trueup.
+- **A round** is one cycle of design, build and review. The rounds have
+  numbers, and the design sections of a round share its number: round 14
+  made sections D14.1 to D14.23 of
+  [the architecture](../ARCHITECTURE.md).
+- **`target-rust`, `target-mixed`** and similar names stand for private
+  repositories of the maintainer that trueup ran on. Their real names
+  are not given.
+- **A path that starts with `.state/`** is a private work record of the
+  maintainer. git does not track that directory, so a clone does not
+  have these files. The paths stay in the text as a record of the
+  source.
+- **A commit id** from before 2026-11-17, such as `257ca52`, is in the
+  maintainer's private history. The public history starts with one
+  commit that holds the result of them all.
+- **"This machine"** is the maintainer's computer.
+
+## The page as written on 2026-10-12
+
+Every number comes from a command that ran on this machine on that date;
+the last section lists the commands. The page reads the working tree,
+which holds round 3 and round 4 uncommitted on commit `257ca52`.
 
 ## Purpose
 
@@ -447,6 +485,34 @@ findings and the plan:
 - The trust review found that a `house` run hangs on a tracked symlink
   to a FIFO (I-50). Round 16 routes those reads through bounded readers
   and adds tests (D16.10).
+
+## Status on 2026-11-18
+
+trueup is public as the alpha version 0.1.0a1. The updates to the
+findings and the plan:
+
+- F5 and P6: closed. The repository is at
+  <https://github.com/amsys/trueup>. The public history starts with one
+  commit, and the tag is `v0.1.0a1`, not the `v0.1.0` of the plan,
+  because the version is an alpha. The CI workflow runs on each push, on
+  Python 3.11 and 3.14: the lint hooks, `trueup check` on this
+  repository, the test suite, a secret scan and a dependency scan.
+- F4 and S9: the self-check now runs in CI on a clean checkout, so it no
+  longer depends on one machine. `AGENTS.md` and `CLAUDE.md` are plain
+  tracked files that a person edits.
+- F1: the command installs from the public repository
+  (`uv tool install git+https://github.com/amsys/trueup`). The plugin
+  install from the public repository is not confirmed by a second person
+  yet.
+- F6 stays open. The architecture is 397 KB and the reference is 178 KB.
+  The architecture now starts with a section that says how to read it,
+  and [a tutorial](../tutorial/first-run.md) gives a new reader a
+  shorter way in.
+- The purpose stated above has one change. trueup is still one person's
+  standard, but the `minimal` profile, user profiles and the keys of
+  `trueup.toml` let a different person use a part of it or replace it.
+  Reports from other people's repositories are the test that this
+  version needs.
 
 ## Evidence
 

@@ -2,18 +2,38 @@
 id: brief
 type: explanation
 audience: [maintainer, agent]
-status: draft
-last_reviewed: 2026-11-02
+status: current
+last_reviewed: 2026-11-18
 ---
 
 # trueup brief
 
-trueup is the documentation and code-comment baseline for a repository,
-and a skill that applies that baseline to any repository. The checker that
-proves the references between code, design and law is the meridian check
-(`trueup/ref_check.py`), merged into this repository on 2026-10-03 from the
-archived meridian project. This repository holds the standard, the rule
-sets, the skill and, since the merge, the checker.
+trueup checks a git repository for mess and helps a person remove it. It
+has three parts that work as one tool:
+
+- a written standard for documents and for code comments, with a lint
+  rule set for each language;
+- a hygiene check for the files of the repository: scratch files, build
+  output, secrets, a crowded root and missing health files;
+- a reference checker, `trueup/ref_check.py`, which proves the references
+  between code, design documents and law texts.
+
+A person runs trueup as the `trueup` command or as a Claude Code plugin
+with a skill. This page states the problem, the goals, the limits and the
+decisions taken.
+
+## How to read this page
+
+- This page is a record. A decision that a later one replaced stays in
+  the text, marked "Superseded" with the date and the replacement.
+- An id such as `D5.4` names a section of
+  [the architecture](ARCHITECTURE.md). An id such as `S9` names a success
+  criterion on this page.
+- "The owner" is the maintainer of trueup.
+- "The meridian check" is the reference checker. meridian is the project
+  that the checker was part of before it moved into this repository on
+  2026-10-03. That project is archived and is not public.
+- A "target" is a repository that trueup checks.
 
 ## Problem statement
 
@@ -156,12 +176,14 @@ evidence for each.
   linters prove code rules; Vale proves prose rules. The skill sets them up
   and reads their output.
 - No hosted service. Every check runs offline on the repository.
-- No generated agent entry file. `AGENTS.md` and `CLAUDE.md` come from a
-  generator outside this repository; `trueup` only checks that they are
-  there and linked (D5.4).
+- No generated agent entry file. A person or a different tool writes
+  `AGENTS.md` and `CLAUDE.md`; `trueup` only checks that they are there
+  and linked (D5.4).
 - No published package in the first version. A repository copies what it
   needs. On 2026-10-16 the profiles row below replaced the second
-  sentence: a repository copies only `trueup.toml` (D14.8).
+  sentence: a repository copies only `trueup.toml` (D14.8). Since
+  2026-11-17 the command installs from the public git repository; it is
+  not on PyPI.
 - No check of meaning. The checker cannot prove that a test exercises the
   design section that it cites.
 - No graph and no graph queries. The edge file of S21 is the only output
@@ -223,7 +245,7 @@ rules above; the rest stays out of this version.
 | Slop score? | A weighted score from 0 to 100 and a CI gate on a regression. ([B8](explanation/research-repo-hygiene.md#b8-output-artifacts)) | Split. The score is in scope: five weighted categories, printed with every `check` (D5.7). A CI gate on it is out of scope; the report states the score is a proposal, not a measurement another tool has checked. |
 | Agent hooks? | Claude Code hooks that block a new root file or a scratch file. ([B9](explanation/research-repo-hygiene.md#b9-hooks-and-continuous-mode)) | In scope. The guard hook denies a new, un-allowed root file and a scratch-looking write or `git add`; pre-commit stays the runner for the lint rule sets (D5.8). |
 | Scheduled cleanup bot? | A weekly job that opens cleanup pull requests. ([B9](explanation/research-repo-hygiene.md#b9-hooks-and-continuous-mode)) | Out of scope. `trueup` reports and applies on request; it opens no pull request and runs on no schedule of its own. |
-| Agent files? | The tool writes `AGENTS.md` and a `CLAUDE.md` that imports it. ([B8](explanation/research-repo-hygiene.md#b8-output-artifacts)) | Check-only. From T1, `trueup` warns when `AGENTS.md` is missing or `CLAUDE.md` does not link to it; it never writes either file. The non-goal stands: a generator outside this repository writes them (D5.4). |
+| Agent files? | The tool writes `AGENTS.md` and a `CLAUDE.md` that imports it. ([B8](explanation/research-repo-hygiene.md#b8-output-artifacts)) | Check-only. From T1, `trueup` warns when `AGENTS.md` is missing or `CLAUDE.md` does not link to it; it never writes either file. The non-goal stands: a person or a different tool writes them (D5.4). |
 | Location of the configuration? | `.config/repo-medic.toml`, or a `[tool]` table in the manifest. ([B8](explanation/research-repo-hygiene.md#b8-output-artifacts)) | `trueup.toml` at the root (D5.3). |
 | Community files? | A per-tier list of health files, with `.github/` as their home. ([A2](explanation/research-repo-hygiene.md#a2-community-health-and-supporting-files)) | In scope. The per-tier list in D5.4: README and `.gitignore` at every tier, a licence from T1 (at T0 when `public` is true), `.editorconfig` from T1 (superseded on 2026-11-02 by D15.37: no row checks `.editorconfig` since D14.8; `trueup template editorconfig` prints one), a changelog once tagged, a contributing guide from T2, the public-only files from T2 when `public` is true, and `CODEOWNERS` at T3. |
 

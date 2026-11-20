@@ -6,6 +6,10 @@ numbers follow [PEP 440](https://peps.python.org/pep-0440/).
 
 ## [Unreleased]
 
+### Added
+
+- A tutorial, "Your first run": five minutes on a practice repository.
+
 ## [0.1.0a1] - 2026-11-16
 
 The first public version. It is an alpha: the commands, the

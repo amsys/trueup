@@ -22,6 +22,29 @@ numbers and the ids that start with Q or R stay in the archived meridian
 repository's own design and brief. `trueup/ref_check.py` is the one
 checker source (I-26); a change to it is made here.
 
+## How to read this page
+
+This page is a design record, and it is long. Do not read it from start
+to end. To learn how to use trueup, read
+[the trueup reference](reference/trueup.md) instead. Come here to look up
+one section: a test, a comment or a different page cites a section by its
+id, and the subject index below lists the sections of each subject.
+
+- The sections are in the order in which they were designed, not in the
+  order of the subjects. The work was done in rounds, and a section has
+  the number of its round: D14.3 is a section of round 14.
+- A later section can replace an earlier one. The earlier text stays,
+  with a note that names the section in force. In the subject index, the
+  section in force comes first.
+- "The owner" is the maintainer of trueup. A "target" is a repository
+  that trueup checks; names such as `target-rust` stand for private
+  repositories of the maintainer.
+- A path that starts with `.state/` is a private work record of the
+  maintainer. git does not track that directory, so a clone does not have
+  these files. The paths stay in the text as a record of the source.
+- A commit id from before 2026-11-17 is in the maintainer's private
+  history. The public history starts with one commit.
+
 ## Subject index
 
 The ids are numbered by round, not by subject. This table gives the

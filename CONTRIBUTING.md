@@ -39,11 +39,10 @@ file. Do not run two suites at the same time on one machine: the
    UV_OFFLINE=1 pytest -q
    ```
 
-   `trueup refs` runs the meridian check, merged into this repository on
-   2026-10-03 from the archived meridian project; its command line and
-   exit codes are
-   [D2.3](docs/ARCHITECTURE.md#d23--command-line-and-exit-codes "pin:08ee34e2").
-
+   `trueup refs` runs the reference checker: it proves that each design
+   id that a comment or a test cites exists, and that each link between
+   documents resolves. Its command line and exit codes are in
+   [the architecture](docs/ARCHITECTURE.md#d23--command-line-and-exit-codes "pin:08ee34e2").
    A test for a tool this machine does not have skips and names the tool;
    `pytest -rs` lists those.
 5. Open a pull request that describes what changed and why.

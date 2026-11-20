@@ -14,8 +14,8 @@ trueup is a command-line tool and a Claude Code plugin. The command line
 needs only Python and git. The plugin adds a skill that reads the
 report with you, asks what to keep, and applies what you approve. It
 also sets up the lint rules of each language in one of two modes, strict
-or clean. The [brief](docs/BRIEF.md) states the goals and the decisions
-taken.
+or clean. New here? [Your first run](docs/tutorial/first-run.md) takes
+five minutes.
 
 **Status: alpha.** trueup works on its author's repositories, and few
 other people have run it. Expect false positives. The commands, the
@@ -24,17 +24,22 @@ other people have run it. Expect false positives. The commands, the
 [report](https://github.com/amsys/trueup/issues) each wrong finding and
 each crash: that is the testing this version needs.
 
-What sets it apart (D12.12):
+What sets it apart from other tools:
 
-1. It finds a destination for a misplaced page from the git history.
-2. Each finding has a stable id, and each is automatic or manual. You
-   approve by id.
-3. One plan covers documents, comments and repository hygiene.
-4. Tests prove convergence: a scrambled tidy repository returns to tidy
-   (S23), and more mess never scores better (S24).
-5. It runs offline and gives the same result each time. It opens no pull
-   request. The install guard's registry lookup is off unless
-   `[guard] registry = true`.
+1. **It knows where a page belongs.** When a document is in the wrong
+   place, trueup reads the git history to propose where to move it.
+2. **You approve by id.** Each finding has a stable id, and each is
+   automatic (trueup can repair it) or manual (trueup tells you what to
+   do). Nothing changes until you name the id.
+3. **One plan.** Documents, comments and repository hygiene are in the
+   same report.
+4. **It is tested to converge.** The test suite scrambles a tidy
+   repository and proves that trueup brings it back, and that more mess
+   never gets a better score.
+5. **It runs offline.** The same input gives the same report. trueup
+   uses no hosted service and opens no pull request. The one network
+   lookup, a package-registry check in the plugin's install guard, is
+   off unless you set `[guard] registry = true`.
 
 ## Install
 
@@ -130,40 +135,40 @@ says so. `--profile NAME` selects one for a run; see
 [The trueup reference](docs/reference/trueup.md) lists every command, the
 `trueup.toml` keys, the findings, the rule sets and the score.
 
-This repository also carries the comment and document standard on its
-own. [`lint/`](lint/) is this repository's own comment-standard kit: the
-configs that the lint commands of the comment standard use on this
-repository. A target does not copy it; `trueup lint` makes the configs
-of a target at run time.
+## The standards
 
-1. Read [the comment standard](docs/reference/comment-standard.md) and
-   [the document standard](docs/reference/document-standard.md).
-2. Run the lint commands that the comment standard names for each language.
-   The TypeScript command reads the eslint packages that
-   `lint/ts/package.json` lists, installed in `lint/ts/`.
-3. Run the checker from the root of the repository:
+The `house` profile checks two written standards. You can read them, and
+use them without trueup:
 
-   ```sh
-   python3 trueup refs --root .
-   ```
+- [The comment standard](docs/reference/comment-standard.md) gives the
+  comment rules of each language and the lint command that checks them.
+- [The document standard](docs/reference/document-standard.md) gives the
+  rules of a page under `docs/` and of the root README.
 
-## The meridian check
+## The reference checker
 
-`trueup refs` runs the meridian check, the reference checker merged into
-this repository on 2026-10-03 from the archived meridian project. Its
-command line and exit codes are
-[D2.3](docs/ARCHITECTURE.md#d23--command-line-and-exit-codes "pin:08ee34e2"),
-and its configuration file is
-[D2.5](docs/ARCHITECTURE.md#d25--configuration-file-ref_checktoml "pin:2c5f796f").
-A link with a pin, such as the one to
-[D2.3](docs/ARCHITECTURE.md#d23--command-line-and-exit-codes "pin:08ee34e2")
-above, carries a hash of the section text, so check g reports the link
-when the section changes.
+`trueup refs` checks that references are true. A comment or a test can
+cite a section of your design document by its id, and a document can link
+to a section of a different document. The checker fails when the cited id
+or the linked heading does not exist.
+
+A link can also carry a pin, which is a short hash of the section that
+it points to. When the text of that section changes, the checker reports
+the link, so that a person reads the two texts again. This link has a
+pin:
+[the command line of the checker](docs/ARCHITECTURE.md#d23--command-line-and-exit-codes "pin:08ee34e2").
+The [configuration file](docs/ARCHITECTURE.md#d25--configuration-file-ref_checktoml "pin:2c5f796f")
+of the checker is `ref_check.toml`.
+
+The documents call this checker "the meridian check". The name comes from
+meridian, the project that the checker was part of before it moved here.
 
 ## Documents
 
 Start at the index, [docs/README.md](docs/README.md). Then read:
 
+- [Your first run](docs/tutorial/first-run.md): a five-minute tutorial on
+  a practice repository.
 - [The trueup reference](docs/reference/trueup.md): the command line,
   `trueup.toml`, the findings, the rule sets and the score.
 - [Apply trueup](docs/how-to/apply-trueup.md): install the plugin, run the
@@ -172,14 +177,13 @@ Start at the index, [docs/README.md](docs/README.md). Then read:
   today's findings and fail CI only on a new one.
 - [The comment standard](docs/reference/comment-standard.md): the comment
   rules of the five languages, the lint commands, and the marker registry.
-  It is the page of
-  [D1.4](docs/ARCHITECTURE.md#d14--the-comment-standard-page "pin:b9e95ecb").
 - [The document standard](docs/reference/document-standard.md): the page
   rules, the root README rules, and the further rules trueup checks.
-- [Architecture](docs/ARCHITECTURE.md): the design of the baseline and the
-  plugin, and its verification.
-- [Baseline research](docs/explanation/baseline-research.md): the research
-  that the project starts from.
+- [The brief](docs/BRIEF.md): the goals, the limits and the decisions
+  taken.
+- [Architecture](docs/ARCHITECTURE.md): the design record, section by
+  section, with the tests that verify each one. It is long; use it to
+  look up one section, not to learn the tool.
 
 ## Contributing
 
