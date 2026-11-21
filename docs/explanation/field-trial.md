@@ -20,9 +20,9 @@ read-only throughout: `git status --short` before and after every run
 matched, and `trueup apply` never ran. Every finding was opened and judged
 by hand as a true positive (TP), a false positive (FP), or noise (an
 accurate finding on data kept on purpose, such as a test fixture). The
-[Calibration](../reference/trueup.md#calibration) table above gives the same six repositories'
-score before and after; this section adds the tier, the judged counts, and
-the run time. The TP, FP and NOISE columns count every plan finding,
+[Calibration](../reference/trueup.md#calibration) table of the reference
+gives the score of the same six repositories before and after; this
+page adds the tier, the judged counts, and the run time. The TP, FP and NOISE columns count every plan finding,
 `setup` findings too (meridian's 16 TP are all first-run `config`,
 `file-managed` and `gitignore` findings); the Calibration table counts
 only findings in the five scored categories.
@@ -79,18 +79,19 @@ A run on target-web/3d (2026-10-16) found two more shapes:
 
 FP-1 (18), FP-2 (1) and FP-3 (2) drove 21 of target-mixed/src's 61 false
 positives; the other 40 were FP-6. FP-4 was target-py/src's one false
-positive. FP-5 alone drove about 28 of target-go's 38 v1 points (the
+positive. FP-5 alone drove about 28 of the 38 points that target-go scored before
+the fixes (the
 `security` category is a step function, so one false positive filled its
 full weight of 25). FP-6 is fixed in `ref_check.py` and re-copied into this repository,
 but target-mixed/src's own `ref_check.toml` does not yet set `local_tags`
 (see [Follow-ups](#follow-ups)), so its score does not move in the
-Calibration table above. The raw trial record, with the evidence for every
+Calibration table of the reference. The raw trial record, with the evidence for every
 row, is `.state/runs/trueup-v2/00-field-trial.md`, a private work record
 of the maintainer that is not in this repository.
 
 ## Follow-ups
 
-Not done by this version, and not `trueup` code:
+Not done yet, and not `trueup` code:
 
 - **target-mixed's own `trueup.toml`.** [D6.11](../ARCHITECTURE.md#d611--local-tags)
   adds the `[registry] local_tags` key so a project's own comment-tag

@@ -170,7 +170,8 @@ How to read an exit code:
   Show these lines (see "Lint and templates"). `lint` also exits 2 when
   `ROOT` has no `trueup.toml` and the person has no user default file.
 
-In global mode, `refs` and `lint` make the checker config from
+In global mode, the default of `[refs] mode`, `refs` and `lint` make
+the checker config from
 `trueup.toml` at each run, as `check` does, so a new `[[keep]]` entry or
 `ignore` glob counts at once. Copy mode has a gap here (see
 [copy mode](#copy-mode)).
@@ -210,7 +211,7 @@ field.
 - `tree`: the identity of the working tree that `apply --plan` compares.
 - `repins`: the re-pin plan (see "Re-pin plan").
 - `moves`: the move plan (see "Move plan").
-- `setup:trueup.toml` in `findings`: below T2 with no `trueup.toml`, this
+- `setup:trueup.toml` in `findings`: at T1 with no `trueup.toml`, this
   one row takes the place of the setup rows (see "First run").
 - `score`: `total` (0 is best), `tier`, `categories` and `raw`, the count
   behind each category as text. Give the person the raw counts too: a
@@ -290,7 +291,7 @@ when the person agrees.
    is different, it names the one install the person's commits need (see
    "Manual items"). `check` makes the checker config from the config in
    force at each run, so the `refcheck` findings already use its
-   switches, and the plan does not grow after `apply`. At T0 and T1 with no `trueup.toml`, the setup
+   switches, and the plan does not grow after `apply`. At T1 with no `trueup.toml`, the setup
    is one `setup:trueup.toml` info row: it writes `trueup.toml`, the one
    file that a target keeps (see
    [the managed set by tier](../../docs/reference/trueup.md#managed-set-by-tier)).
@@ -378,10 +379,11 @@ Build one `apply` call from the approvals and the answers:
   An `off` answer is a real value: it stops the question on the next run.
 - Put the public answer in `--set public=true` or `--set public=false`.
 - Put a tier override in `--set tier=T2`. Leave `tier` out for `auto`.
-- At T0 or T1 with no `trueup.toml`, put `setup:trueup.toml` in `--ids`
+- At T1 with no `trueup.toml`, put `setup:trueup.toml` in `--ids`
   when the person wants trueup set up. It writes `trueup.toml`.
   `--all-auto` never takes it. Without it, no setup file is written, and
-  the other ids still apply.
+  the other ids still apply. At T0 the plan has no such id, and `apply`
+  exits 2 on it.
 - Put a profile answer in `--set profile=<name>`: it writes the
   `profile` key. `--profile <name>` changes one run only and writes
   nothing.
@@ -574,7 +576,7 @@ Run the steps in this order:
 1. `check`. Show the plan and the move plan.
 2. `apply --ids` with the approved automatic ids (or `--all-auto` when the
    person approves every automatic finding). This removes copies and junk
-   such as `README.old.md`, which can change the evidence of a move.
+   such as `a.bak` or `notes.md`, which can change the evidence of a move.
 3. `check` again. Show the move plan of this run. For each move, give the
    source, the target, the basis and the evidence, and ask: move it, keep
    the page where it is, or leave it for later. A `standard` target is
@@ -1008,7 +1010,7 @@ The last line names the command to run: `trueup check` when `trueup` is
 on `PATH`, else `python3 <launcher> check`. Follow them. trueup keeps no
 rules file in the target.
 
-The guard asks; it does not deny. When it asks about a new root file
+For a file, the guard asks; it does not deny. When it asks about a new root file
 whose name is not on its base list or in `[root] allow`, the person
 decides. To stop the question for that name, propose a `[root] allow`
 entry. When it asks about a new scratch-looking name outside `.scratch/`

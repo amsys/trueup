@@ -8,13 +8,27 @@ last_reviewed: 2026-11-21
 
 # Design verification
 
-This page holds the claims of [the trueup architecture](../ARCHITECTURE.md):
-each design id below must have a test that cites it.
+This page is the test record of
+[the trueup architecture](../ARCHITECTURE.md). Each entry gives one claim
+of the architecture and the tests that prove it. An entry that has no test
+says so and gives the reason.
 
 ## Verification
 
-A test cites the ids that it proves in its docstring. The ids below are all
-the claims of this design. The criteria S1 to S24 are in the brief.
+An id names a claim. `D5.4` is a section of the architecture, `I-23` is
+an invariant, `S11` is an acceptance criterion and `LOW-7` is an item of
+a review. The criteria S1 to S24 are in [the brief](../BRIEF.md); S25 and
+S26 are in the architecture. A test cites the ids that it proves in its
+docstring.
+
+The entries are in this order: unit tests, integration tests, acceptance
+tests, then groups for the later work, in time order. A group has the
+name of its round, its wave or its subject. The entries of D13, D14 and
+D15 follow the group of D12 with no heading of their own. A round is one
+cycle of design, build and review, and a wave is one batch of work in a
+round.
+[The index](../README.md#words-that-the-records-use) explains the other
+words of the records.
 
 **Unit.** Pure functions of the checker, called in process with text or a
 small temporary tree as input.
@@ -79,7 +93,7 @@ rule-set test whose tool is absent skips by design and names the tool
 its own is listed as unverified in the reference page.
 
 - D5.10 and D5.8: the plugin manifest, the marketplace entry and the hook
-  wiring match this design, and `python3 trueup` runs as a directory
+  wiring match the architecture, and `python3 trueup` runs as a directory
   (`test_plugin_manifest.py`, `test_cli.py`); the guard asks about a new root
   file, a scratch-looking write outside `.scratch/`, and a `git add` of a
   scratch-looking path, and its reason names `[root] allow` or
@@ -114,7 +128,7 @@ its own is listed as unverified in the reference page.
   Vale `Banned.yml` token list is equal to `trueup/data/banned.txt`
   (`test_rulesets.py`).
 - D5.6, I-21, I-24 and I-26: a managed file absent, unchanged, changed with
-  the header, and changed with no header each give the finding this design
+  the header, and changed with no header each give the finding the architecture
   states; the pre-commit hooks render in a fixed order; a `protect` glob
   is never touched; `ref_check.py` on disk that differs from the bundled
   copy gives a manual warning (`test_managed.py`, `test_apply.py`).
@@ -170,20 +184,22 @@ its own is listed as unverified in the reference page.
   writes `.trueup-baseline.json` and no other file (`test_baseline.py`,
   `test_cli.py::test_baseline_writes_the_file_and_prints_a_summary_line`).
 - D6.7 and I-16: `check --baseline` exits 2 with no baseline file, 0 on an
-  unchanged repository, and 1 on a new finding key or a score rise, and
-  adds the same `Gate` fields to the Markdown and the JSON report
+  unchanged repository, and 1 on a new finding key, and adds the same
+  `Gate` fields to the Markdown and the JSON report; a score rise with no
+  new key passes (D15.21)
   (`test_check.py`,
-  `test_baseline.py::test_compare_flags_a_score_rise_even_with_no_new_key`).
+  `test_baseline.py::test_compare_passes_a_score_rise_with_no_new_key`).
   The CI-delivery half of D6.7 — `pip install --target <tmp> .` and
   `python3 -m pip wheel .` succeeding, and `.pre-commit-hooks.yaml`'s
-  shape — has no automated test in this repository; this design's own text
-  states it as a hand-run check instead.
+  shape — has no automated test in this repository; D6.7 of the
+  architecture states it as a hand-run check instead.
 - D6.8: each ratchet source (the Python docstring `ast` count, a Cobertura
   report, a Go coverprofile, an lcov report) parses correctly, a drop past
   the 0.1 tolerance is a `ratchet_drops` entry, and a recorded metric with
   no report now is a `missing_reports` entry (`test_baseline.py`).
-- D6.9 and I-25: the three form entries (`harness`, `unlock`, `underscore`)
-  fire on a verb fixture and stay silent on the paired noun fixture, for
+- D6.9 and I-25: the form entries (`unlock`, `underscore`, `leverage`) fire on a
+  verb fixture and stay silent on the paired noun fixture, and `harness`
+  is silent in each use since D15.16, for
   the Python matcher and for a real `vale` run alike, and a `prose` finding
   naming 10 or more distinct words carries the `[[keep]]` hint line
   (`test_docrules.py`, `test_check.py`,
@@ -218,7 +234,9 @@ its own is listed as unverified in the reference page.
   same present-language set with the built-in counter and with `tokei`
   (`test_survey.py::test_tokei_scope_matches_builtin_for_ignored_files`,
   `test_check.py`).
-- D6.15: each LOW item of the table above has its own regression test, or a
+- D6.15: each LOW item of
+  [the D6.15 table](../ARCHITECTURE.md#d615--review-debt) has its own
+  regression test, or a
   stated reason it needed none, recorded in
   `.state/runs/trueup-v2/07-low.md`; for example
   `test_hooks.py::test_importing_hooks_does_not_pull_in_survey_or_rulesets`
@@ -245,12 +263,11 @@ its own is listed as unverified in the reference page.
 - D5.3 and D5.6: a `[refs] path` value that is relative, ends in `.py` and
   has no `..` or `.` part and no backslash round-trips through `config.render`; a bad value raises
   `ConfigError`; `render()` writes the checker's bytes at `cfg.refs_path`,
-  the rendered `ref-check` pre-commit entry and the Python `ruff-format`
-  exclusion both follow it, and a module at a custom path that differs
-  from the bundled copy is a manual `warn`
+  and a module at a custom path that differs from the bundled copy is a
+  manual `warn`. The pre-commit snippet has no `ref-check` entry since
+  D14.9, so no test of that entry stays
   (`test_config.py`,
   `test_managed.py::test_render_writes_the_checker_at_a_custom_refs_path`,
-  `::test_render_pre_commit_follows_a_custom_refs_path`,
   `::test_file_finding_byte_equality_follows_refs_path`).
 - D5.11: `trueup refs` is a listed subcommand; it forwards its tokens to
   `trueup.ref_check.main` unchanged, adds the resolved git top level only
@@ -300,17 +317,18 @@ invariant.
   `::test_the_report_names_the_engine_after_the_counter_line`,
   `::test_baseline_and_check_baseline_scan_the_history`,
   `::test_real_gitleaks_finds_the_assembled_key_and_hides_it`); the
-  gitleaks config and hook
-  (`test_managed.py::test_gitleaks_hook_text_is_fixed_and_follows_ref_check`,
+  gitleaks config, and no lint hook runs gitleaks since D14.6
+  (`test_managed.py::test_lint_hooks_start_with_the_language_hooks_and_hold_no_gitleaks`,
   `::test_gitleaks_config_lists_the_ignore_globs_as_anchored_regexes`).
-- D7.4 and I-32: every `uses:` matches the pin pattern; the osv-scanner
-  step is present with a tracked lockfile and absent without; the five
-  fallback comments are present; the gitleaks step scans the full history
+- D7.4 and I-32: every `uses:` matches the pin pattern; the CI text has
+  one osv-scanner step and a comment that says when to remove it; the
+  five fallback comments are present; the job checks out every commit and
+  installs gitleaks by checksum before `trueup check`, which runs the
+  scan since D14.9
   (`test_managed.py::test_ci_pins_every_action_to_a_commit_sha`,
-  `::test_ci_osv_step_follows_the_tracked_lockfiles`,
+  `::test_ci_has_the_osv_step_and_tells_when_to_remove_it`,
   `::test_ci_keeps_the_five_fallback_comments`,
-  `::test_ci_scans_the_full_history_with_gitleaks`,
-  `::test_ci_raises_when_the_osv_step_is_gone`).
+  `::test_ci_installs_gitleaks_by_checksum_before_check`).
 - D7.5: the clean config of each language flags one security bad file
   (`test_rulesets.py::test_python_ruff_config_flags_a_security_bad_file`,
   `::test_typescript_eslint_config_flags_a_security_bad_file`,
@@ -320,14 +338,15 @@ invariant.
   `::test_required_item_count_matches_the_tier_table`).
 - D7.7 and I-29: each install table row and each skip rule; deny for an
   unknown package, ask for a young one, no decision and a `systemMessage`
-  for an unreachable registry; no output holds `allow`; the guard imports
+  for an unreachable registry; no output holds `allow`; a registry deny
+  wins over the scratch `git add` ask (D15.31); the guard imports
   `registry` only for an install
   (`test_hooks.py::test_install_table_rows`,
   `::test_install_skip_rules`,
   `::test_install_guard_denies_unknown_package`,
   `::test_install_guard_asks_for_young_package`,
   `::test_install_guard_unreachable_gives_system_message`,
-  `::test_install_guard_runs_after_check_bash_and_its_deny_wins`,
+  `::test_install_guard_deny_wins_over_the_scratch_git_add_ask`,
   `::test_install_guard_imports_registry_only_for_an_install`).
 - D7.8: a local `http.server` gives each answer type per ecosystem; the
   npm cap; the go escape; the cache hit, the TTL, the `Unreachable`
@@ -390,7 +409,7 @@ invariant.
   `test_managed.py::test_tool_findings_name_the_absent_eslint_packages`).
 - D8.4: a page of cue blocks gives no finding, a real use beside them
   fires on its own line, a cue in a source comment changes nothing, a
-  real `vale` run agrees on the same page, and each of the nineteen block
+  real `vale` run agrees on the same page, and each of the twenty-one block
   shapes of the shared table fires on the same lines in both engines
   (`test_docrules.py::test_a_markdown_block_that_quotes_the_list_gives_no_finding`,
   `::test_a_real_use_beside_a_quoted_list_still_fires`,
@@ -432,11 +451,13 @@ invariant.
 - D9.1: the mode defaults to `global`, `copy` and `layout` read back,
   a mode outside the two or a `path` without copy mode is a config
   error, and `render` round-trips the table; in global mode `render`
-  has no checker entry and the hook runs `trueup refs`, in copy mode the
-  copy and the python3 hook; an old copy is an `info` finding and
+  has no checker entry and the pre-commit snippet runs `trueup lint`
+  only (D14.9); in copy mode `render` writes the bundled checker with
+  the managed header on its first line, and `trueup lint` runs that
+  copy; an old copy is an `info` finding and
   `apply` leaves it in place; `trueup` absent from the path gives the
   install finding in global mode only; the CI workflow names the install
-  in global mode only; in both modes a kept finding fails neither
+  in one placeholder comment, the same in both modes (D14.9); in both modes a kept finding fails neither
   `check` nor the hook's command, and a new one fails both
   (`test_config.py::test_refs_mode_defaults_to_global_and_layout_to_on`,
   `::test_load_reads_refs_mode_path_and_layout`,
@@ -446,7 +467,7 @@ invariant.
   `::test_copy_mode_renders_the_copy_with_the_header_and_the_python_hook`,
   `::test_global_mode_reports_an_old_copy_as_info`,
   `::test_global_mode_names_trueup_when_it_is_not_on_the_path`,
-  `::test_ci_names_the_trueup_install_in_global_mode_only`,
+  `::test_ci_names_the_trueup_install_in_one_placeholder_comment`,
   `test_apply.py::test_apply_in_global_mode_writes_no_copy_and_leaves_an_old_one_in_place`,
   `test_check.py::test_a_kept_refcheck_finding_fails_neither_check_nor_the_hook`).
 - D9.2: the checker reads `[keep] failures` and rejects another shape or
@@ -494,7 +515,7 @@ test. The entries of the other D10 sections come with their tests.
   scratch; a copy suffix on a source extension and the names
   `template.py`, `notes_service.py` and `v0_v1.rs` are not; a clean name
   under a top-level `tmp/`, `temp/` or `scratch/` is scratch for
-  `check`, and the guard hook denies the new names but lets a clean name
+  `check`, and the guard hook asks about the new names but lets a clean name
   under `tmp/` through; a bare basename in another directory exempts
   nothing, a relative or a full path does; when no tracked copy of a
   content stays, one `scratch` finding is manual with the last-copy
@@ -517,7 +538,7 @@ test. The entries of the other D10 sections come with their tests.
   `::test_scratch_last_copy_rule_holds_for_a_small_content`,
   `::test_scratch_copy_evidence_names_the_kept_original`,
   `::test_duplicate_drops_a_path_the_scratch_row_already_flags`,
-  `test_hooks.py::test_guard_denies_the_widened_scratch_name_patterns`,
+  `test_hooks.py::test_guard_asks_on_the_widened_scratch_name_patterns`,
   `::test_guard_ignores_the_scratch_directory_rule`).
 - D10.4: `dist/` beside a Go manifest is an `artifact` directory, and an
   artifact directory that holds a tracked page is a manual finding that
@@ -648,16 +669,16 @@ the `converge` fixture.
 - D10.10: the `converge` fixture, scrambled by the ten operations of
   `SCRAMBLE_OPS`, gives the tidy tree back after `check`, `apply
   --all-auto`, `check` and `apply` of each move id, with `layout` on and
-  off; one operation at a time never gives a shorter plan or a lower
-  score
+  off; one operation at a time gives a longer plan and a higher score
+  than the tidy tree
   (`test_convergence.py::test_scrambled_fixture_converges_to_its_tidy_source`,
-  `::test_one_scramble_operation_never_gives_a_smaller_plan_or_a_lower_score`).
+  `::test_one_scramble_operation_gives_a_longer_plan_and_a_higher_score`).
 - I-36: the seven scrambled pages give seven `doc-misplaced` findings,
   and the two pages of `misc/design/` give one directory move; each scramble
-  operation, with `layout` on and off, gives a plan that is not shorter
-  and a score that is not lower than the tidy tree
+  operation, with `layout` on and off, gives a longer plan and a higher
+  score than the tidy tree
   (`test_convergence.py::test_scrambled_fixture_converges_to_its_tidy_source`,
-  `::test_one_scramble_operation_never_gives_a_smaller_plan_or_a_lower_score`).
+  `::test_one_scramble_operation_gives_a_longer_plan_and_a_higher_score`).
 - I-37: after the four steps, `git ls-files -s` of the scrambled tree,
   with blob hashes, equals the tidy tree apart from the files trueup
   writes, and a new `check` gives no move
@@ -711,10 +732,10 @@ names the tests that came with its fix.
   `test_layout.py::test_history_renames_reads_a_committed_non_ascii_rename`,
   `::test_history_renames_reads_a_staged_non_ascii_rename`).
 - D10.9: the tidy `converge` tree gets no `doc-misplaced` and no
-  `scratch` finding, and no scramble operation gives a shorter plan or a
-  lower score than the tidy tree
+  `scratch` finding, and each scramble operation gives a longer plan and
+  a higher score than the tidy tree
   (`test_convergence.py::test_scrambled_fixture_converges_to_its_tidy_source`,
-  `::test_one_scramble_operation_never_gives_a_smaller_plan_or_a_lower_score`).
+  `::test_one_scramble_operation_gives_a_longer_plan_and_a_higher_score`).
 - I-24: an `artifact` directory that holds a protected non-ASCII file is
   skipped
   (`test_move.py::test_untrack_keeps_a_directory_with_a_protected_non_ascii_file`).
@@ -783,8 +804,8 @@ test. S25 and S26 are the acceptance tests of D12.1 and D12.9.
   `::test_stamp_edits_only_the_run_date_line`,
   `::test_cli_passes_allow_dirty`,
   `test_repin.py::test_apply_repin_refuses_a_dirty_page`).
-- D12.3: line 2 of the Markdown report is the tree comment, absent
-  outside git; the boxes sit on exactly the approvable ids, and the
+- D12.3: line 2 of the Markdown report is the tree comment; outside git
+  `check` exits 2 and writes no report (D15.2); the boxes sit on exactly the approvable ids, and the
   parity parse still gives each id; `approvable` holds the move, re-pin
   and setup ids; `--from-report` applies the ticked ids as `--ids` does,
   the setup box and a re-pin box, collects once, and refuses a report
@@ -792,7 +813,7 @@ test. S25 and S26 are the acceptance tests of D12.1 and D12.9.
   ticked box and a path cut short by a dash; the CLI runs it and keeps
   it apart from `--ids` and `--plan`
   (`test_from_report.py::test_markdown_line_two_is_the_tree_comment`,
-  `::test_markdown_has_no_tree_comment_outside_git`,
+  `::test_check_outside_git_writes_no_report_so_no_tree_comment_exists`,
   `::test_boxes_sit_on_exactly_the_approvable_ids`,
   `::test_box_line_forms_and_the_parity_parse`,
   `::test_approvable_maps_each_id_to_what_it_acts_on`,
@@ -838,10 +859,11 @@ test. S25 and S26 are the acceptance tests of D12.1 and D12.9.
   `::test_apply_repin_refuses_a_line_that_changed`,
   `::test_saved_plan_loads_and_applies_the_repins`,
   `::test_saved_plan_with_a_bad_repins_entry_is_refused`).
-- D12.7: the rules file is in the T2 set with its front matter and
-  header, needs T2 when no page is under `docs/`, has its header on the
-  first line after the front matter, and stays out of the set when the
-  file on disk is not trueup's
+- D12.7 (replaced by D14.8 and D14.10): no tier set holds the agent
+  rules file `.claude/rules/trueup.md`, at T1 or T2, with or without a
+  page under `docs/`; an old file with the header on the first line
+  after its front matter gives a `managed-legacy` row, and a rules file
+  that a person wrote gives no row
   (`test_managed.py::test_agent_rules_file_is_in_the_t2_set_with_front_matter_and_header`,
   `::test_agent_rules_file_needs_t2_without_a_docs_page`,
   `::test_agent_rules_file_header_is_the_first_line_after_front_matter`,
@@ -850,8 +872,8 @@ test. S25 and S26 are the acceptance tests of D12.1 and D12.9.
   (`test_rulesets.py::test_python_strict_has_the_pydoclint_hook_after_complexipy`).
 - D12.9: `docs` defaults to `auto`, and `resolve_docs` maps it by tier;
   the render gives the tier set at T0, T1 and T2, keeps a managed file on
-  disk below its tier, keeps the copy-mode checker at any tier, names the
-  gitleaks config only when it is in the set, and keeps `auto` in
+  disk below its tier, keeps the copy-mode checker at any tier, names gitleaks
+  in no lint hook (D14.6), and keeps `auto` in
   `trueup.toml`; no setup finding asks for a path above the tier; the
   refcheck row runs in readme mode with the config of the tier set; the
   tier pick counts no trueup path and still counts a workflow of the
@@ -868,7 +890,7 @@ test. S25 and S26 are the acceptance tests of D12.1 and D12.9.
   `::test_render_copy_mode_checker_is_in_the_set_at_any_tier`,
   `::test_render_keeps_a_managed_file_on_disk_below_its_tier`,
   `::test_setup_findings_never_ask_for_a_path_above_the_tier`,
-  `::test_gitleaks_hook_names_the_config_only_when_it_is_in_the_set`,
+  `::test_no_lint_hook_names_gitleaks_or_its_config`,
   `::test_render_keeps_docs_auto_in_trueup_toml`,
   `test_docrules.py::test_no_config_resolves_docs_by_tier`,
   `::test_refcheck_runs_in_readme_mode_with_the_tier_set_config`,
@@ -1147,7 +1169,7 @@ test. S25 and S26 are the acceptance tests of D12.1 and D12.9.
   (`test_survey.py::test_own_paths_are_the_four_files_trueup_still_writes`).
 - D15.38: the tests name a missing lint tool and a committed copy of this
   repository has an empty plan, and the rewritten tests assert behaviour.
-  The CI matrix has no local test: it first runs when a remote exists
+  The CI matrix has no local test: it runs on each push
   (`test_lint_fixtures.py::test_a_missing_lint_tool_skips_with_its_name`,
   `test_self_check.py::test_check_on_a_committed_copy_of_this_repository_has_an_empty_plan`,
   `test_survey.py::test_tools_reflects_shutil_which`,
@@ -1236,7 +1258,7 @@ or cite lines has no entry.
   Limit: the suite runs on Python 3.14, where the old probes also return
   False. On 2026-11-12 these two tests and the three tests that failed
   on 3.11 passed under Python 3.11.15 (`uv run --python 3.11`). The CI
-  matrix has not run.
+  matrix now runs the suite on Python 3.11 and 3.14 on each push.
 - D16.2: each declaration shape declares, a mention and a fenced block
   do not, a typo id fails, a missing source fails with one row, and the
   keys parse, render and reach the checker

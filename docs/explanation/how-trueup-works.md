@@ -119,8 +119,8 @@ gives exit 2, unless `--skip-missing` is given.
 
 **`trueup refs`.** `cli.main` reads `refs` before the parser runs and
 gives the other tokens, unparsed, to `ref_check.main`. `ref_check.main`
-calls `ref_check.run`, which runs the nine checks a to i and prints
-nothing. For example, check a tests that each cited id exists in the
+calls `ref_check.run`, which runs the nine checks a to i and returns a
+report. `main` prints each failure and one summary line. For example, check a tests that each cited id exists in the
 design, and check g tests the document links. Exit 0 means no failure.
 
 **The hooks.** `__main__.py` exits 0 at once for a `hook` call when the
@@ -136,7 +136,7 @@ exit 0 and no output (I-22).
 
 ## The modules
 
-| File | Purpose | Design ids its docstring cites |
+| File | Purpose | Main design ids |
 |---|---|---|
 | `__init__.py` | Marks the package; states what the package decides and what the skill decides | none |
 | `__main__.py` | The launcher of `python3 trueup`: the Python version gate and the fast exit of a hook | D15.7 |
@@ -163,6 +163,9 @@ exit 0 and no output (I-22).
 | `registry.py` | Package registry lookups for the install guard | D7.8 |
 | `ref_check.py` | The reference checker: the scan, the nine checks, the report | none; see the row "Checker" of the subject index |
 
+The last column gives the sections to read first. The docstring of a
+module can cite more ids.
+
 `trueup/data/banned.txt` holds the banned-word list (I-25).
 `trueup/templates/` holds the rule-set files, the health texts and the CI
 workflow.
@@ -177,7 +180,8 @@ workflow.
   category order, then by id. `config.render` writes the keys in one
   fixed order (D5.3), and the JSON report has sorted keys.
 - **`ref_check.py` is one file that imports nothing from the package.**
-  In copy mode (D9.1), `apply` writes it byte for byte into the target,
+  With `[refs] mode = "copy"` (D9.1), `apply` writes it byte for byte
+  into the target,
   at the `[refs] path` of the config (I-26). So a rule that both sides
   need is in two places. For example, `ref_check.keep_match` is a copy of
   `findings.keep_match`, and a test keeps the two equal.
@@ -201,7 +205,7 @@ workflow.
   `tests/test_saved_plan.py` tests `apply --plan`, and
   `tests/test_self_check.py` runs `check` on a copy of this repository.
 
-The full suite takes about 15 minutes. Run the test files of the modules
+The full suite takes about 3 minutes. Run the test files of the modules
 that you change.
 
 ## How to find a design section

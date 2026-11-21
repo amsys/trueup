@@ -36,7 +36,7 @@ Add each new page to this table.
 | Tutorial | [Your first run](tutorial/first-run.md) | Five minutes on a practice repository: run `check`, read the report, approve a finding by id, and check again |
 | Reference | [Architecture](ARCHITECTURE.md) | The design of the baseline and the plugin: the standard page, the lint configurations, the plugin's commands, findings, rule sets, score and hooks |
 | Reference | [Design verification](reference/design-verification.md) | The claims of the architecture: each design id that a test must prove, and the tests that prove it. Check c reads this page |
-| Reference | [The trueup reference](reference/trueup.md) | The command line, `trueup.toml`, the findings tables, the rule-set table with what this machine could verify, the score formula and the four hook events (`SessionStart`, `PreToolUse`, `PostToolUse`, `Stop`) |
+| Reference | [The trueup reference](reference/trueup.md) | The command line, `trueup.toml`, the findings tables, the rule-set table with what the maintainer's machine could verify, the score formula and the four hook events (`SessionStart`, `PreToolUse`, `PostToolUse`, `Stop`) |
 | Reference | [The comment standard](reference/comment-standard.md) | The comment rules of the five languages, the lint commands, and the marker registry |
 | Reference | [The document standard](reference/document-standard.md) | The page rules of check h, the root README rules of check i, and the further rules `trueup` checks |
 | How-to | [Apply trueup](how-to/apply-trueup.md) | Install the plugin and the `trueup` command, run the skill, answer its questions, approve, and verify with `trueup check` and `trueup lint` |
@@ -70,6 +70,20 @@ trueup was private. They keep these words:
   maintainer. git does not track it, so a clone does not have it.
 - **A commit id** from before 2026-11-17 is in the maintainer's private
   history. The public history starts with one commit.
+- **A wave** is one batch of work in a round. **The trust round** is
+  round 15.
+- **An id** names one statement of the design. `D5.4` is a section of
+  the architecture, `I-23` is an invariant (a rule that the tests keep
+  true), and `S11` is an acceptance criterion.
+- **Check a to check i** are the nine checks of the reference checker,
+  `trueup refs`. Check c proves that each claim of the design has a
+  test, check g reads the links, check h reads the page rules of `docs/`
+  and check i reads the root README.
+- **RULES** is the maintainer's private rules file; its rule 7 is the
+  banned-word list. **`FABLE.md`** is the private file of rulings of the
+  build pipeline, and an `H` ruling is one that a person makes. Ids that
+  start with **Q** or **R**, such as `R-16`, are in the private brief of
+  meridian.
 
 ## Source documents
 

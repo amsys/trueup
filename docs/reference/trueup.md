@@ -13,12 +13,11 @@ hand. For the steps a person follows with the Claude Code skill, read
 [apply-trueup](../how-to/apply-trueup.md). For the steps to gate CI on a
 baseline, read
 [gate CI with a baseline](../how-to/gate-ci-with-a-baseline.md). For the
-design behind these commands, read [ARCHITECTURE.md](../ARCHITECTURE.md),
-sections D5.3 to D5.11, D6.2 to D6.17, D7.1 to D7.10, D8.1 to D8.8,
-D9.1 to D9.6, D10.2 to D10.8, D12.1 to D12.10 and D13.1 to D13.6.
-The profiles, `trueup lint` and `trueup template` are D14.1 to D14.23.
-The trust round is D15.1 to D15.38; this page states D15.1 to D15.29 of
-it.
+design behind these commands, read [ARCHITECTURE.md](../ARCHITECTURE.md).
+An id in brackets on this page, such as `D5.4` or `I-18`, names a
+section or an invariant of that design. You do not need the design to
+use this page. [The index](../README.md#words-that-the-records-use)
+explains the other words of the design work, such as a round.
 
 ## Command line
 
@@ -311,7 +310,7 @@ file:
   stays valid TOML.
 
 The stamp is still no touch for the dirty check: it is not a touched
-path (I-41 holds, gate ruling 2026-11-02). A refused stamp prints
+path (I-41). A refused stamp prints
 `failed run_date: ...`, and the exit is 1.
 
 Config writes (`--mode`, `--set`, `config:*`) still render the whole
@@ -351,8 +350,8 @@ covers gives exit 2, as for `--out`.
 - `tool.driver.rules` has one entry for each rule, with the most severe
   level of that rule.
 
-No CI step of the CI template uploads the file: CI cannot install
-trueup yet (see [Follow-ups](../explanation/field-trial.md#follow-ups)).
+No step of the CI template uploads the file. To upload it, add a step
+to the workflow of the target.
 
 ### trueup lint
 
@@ -389,8 +388,8 @@ prints
 `trueup lint: <n> tool(s) missing: a, b; install them, or pass --skip-missing`
 and exits 2. A missing tool and a failed tool in one run also give 2.
 The function is `lint.run(root, paths, *, changed, install, skip_missing=False)`.
-`--skip-missing` (`lint.run(..., skip_missing=True)`) gives the old
-behaviour: one skip line for each tool that is not installed in place of
+`--skip-missing` (`lint.run(..., skip_missing=True)`) gives one skip
+line for each tool that is not installed in place of
 exit 2, and the exit code of the tools that ran. The
 run does not run gitleaks: `check` runs it for the secret rows. With
 `--changed`, gitleaks scans only the changed files.
@@ -404,9 +403,7 @@ covers. The sqlfluff entry, in clean and strict mode, is
 `{cfg}` is the temporary config directory of the run. `{tools}` is the
 tools directory, `$XDG_CACHE_HOME/trueup/tools/<hash>/`
 (`lint.tools_dir()`): `<hash>` is the first 16 hex digits of the SHA-256
-of the tools manifest (`rulesets.render_tools_manifest()`). In code,
-`{tools}` is
-`cache_home()/tools/<16 hex of sha256 of rulesets.render_tools_manifest()>`.
+of the tools manifest (`rulesets.render_tools_manifest()`).
 The manifest
 holds the versions, jscpd `4.3.0` and sqlfluff `4.3.0`
 (`rulesets.JSCPD_VERSION`, `rulesets.SQLFLUFF_VERSION`), so a new
@@ -438,8 +435,8 @@ lints nothing. Every install runs, and the exit code is the first one that is no
 With nothing to install, it prints
 `trueup lint: TypeScript, Vue, SQL and strict modes are off; nothing to install`
 and exits 0. `--install` is the only `lint` path that uses the network
-(I-28), and it runs only on request. The eslint package directory and
-the tools directory are both part of that second network path (D14.7).
+(I-28), and it runs only on request. It writes only to the eslint
+package directory and the tools directory (D14.7).
 
 Two files belong to the target, and `lint` passes each only when it
 exists under the root (I-47): the eslint suppressions file (`[eslint]
@@ -474,8 +471,9 @@ SECURITY.md; run trueup template security`.
 Every token after `refs` goes to `trueup.ref_check.main` unparsed, so its
 own `--help` prints the checker's usage line, not this command's. It
 reads the `[keep]` table of the config file, so a kept `refcheck` finding
-is not printed, not counted and no reason for exit 1 (D9.2); in global
-mode the `ref-check` pre-commit hook runs this command (D9.1). The
+is not printed, not counted and no reason for exit 1 (D9.2). In global
+mode `trueup lint` runs the checker with the same config (D14.9); no
+pre-commit hook of trueup runs `trueup refs`. The
 checker accepts the flags of `ref_check.REFS_FLAGS`:
 `--root --edges --config --help -h` (D15.36).
 
@@ -483,8 +481,8 @@ checker accepts the flags of `ref_check.REFS_FLAGS`:
 
 A profile is a named set of `trueup.toml` keys. A profile holds the
 standard; the target file holds only what the target wants different.
-So a repository copies nothing but `trueup.toml`. The design of this
-round is D14.1 to D14.23 of [ARCHITECTURE.md](../ARCHITECTURE.md); the
+So a repository copies nothing but `trueup.toml`. The design of the profiles and the config layers
+is D14.1 to D14.23 of [ARCHITECTURE.md](../ARCHITECTURE.md); the
 profiles are D14.1 to D14.3.
 
 ### Search paths
@@ -575,10 +573,10 @@ report shows which file was read.
 
 `house` is the standard of this repository, and the default on an
 adopted target; `minimal` is the default on a target that is not
-adopted. The `house` file writes every key at its default value, so it
-also lists the keys that a profile can set. With `house` in force,
-`check` gives the same findings as before profiles existed, apart from
-the changes of this release (I-48). `minimal` keeps the hygiene rows and the link check, and turns
+adopted. The `house` file writes most keys at their default
+value, so it also lists most keys that a profile can set; it leaves out
+`[refs] declared`, `id_forms`, `accepted_reader_changes` and
+`law_archive`. `minimal` keeps the hygiene rows and the link check, and turns
 the house rules off:
 
 | Key | `house` | `minimal` |
@@ -595,9 +593,7 @@ the house rules off:
 Each other key has the same value in both.
 
 `house.toml` shows `[[eslint.off]]` as a commented example, because the
-key has no entry by default. Its header no longer says that it applies
-when no layer names a profile: on a target that is not adopted,
-`minimal` applies (see [Precedence](#precedence)).
+key has no entry by default.
 
 ### Write a profile
 
@@ -645,16 +641,11 @@ the default; it never copies a value of a profile into the file (I-45).
 
 Since D14.8, a target in global mode holds no `ref_check.toml` and no
 eslint config of trueup. Where a row below says that `apply` renders a
-key into the managed `ref_check.toml` (`ignore`, `[refs] local_tags`,
-`[refs] law_archive`, `[refs] layout`, `[[keep]]`), `check`, `trueup lint` and `trueup refs`
-render the key into the checker config of each run (D14.5); only in
-copy mode does the managed `ref_check.toml` hold it, with its
-`file-managed` row. Where a row says that `apply` renders a key into
-`lint/typescript/eslint.config.mjs` (`[[eslint.off]]`), `trueup lint`
-renders it into the eslint config of each run, and no `file-managed`
-row comes. For the pre-commit hooks and the gitleaks allowlist of the
-`ignore` row: `trueup lint` drops an ignored path from its selection,
-and the gitleaks config that `check` renders holds the globs. A
+key into the managed `ref_check.toml` (`[refs] local_tags`,
+`[refs] law_archive`, `[refs] layout`, `[[keep]]`), `check`,
+`trueup lint` and `trueup refs` render the key into the checker config
+of each run (D14.5); only in copy mode does the managed `ref_check.toml`
+hold it, with its `file-managed` row. A
 `[refs] layout` that the file sets is written back, also when it is
 `true`; it sets the three `[layout]` switches, and it cannot stand
 beside them (D14.2).
@@ -668,7 +659,7 @@ beside them (D14.2).
 | `public` | `true`, `false` | `true` makes a licence required at tier T0, makes `SECURITY.md` required at every tier, adds the other public-only health files (C2 and a code of conduct) at tier T2 and up, and adds the three `platform:*` info rows (see [Security floor](#security-floor)). `public = false` written in the target's own `trueup.toml` also drops the `health-license` row at every tier, and the checker config of the run gets `[checks] licence = false`, which turns off the checker rule `no-licence-file` and the `no-section` failure for a missing `License` section (D15.14). An unset `public` keeps the licence rows. `config.public_is_false(cfg, root)` gives this answer; when `cfg.explicit` is `None` (the effective config), it reads the target layer of `root`. |
 | `docs` | `auto`, `full`, `readme`; default `auto` | `auto` gives `readme` at T0 and T1 and `full` at T2 and T3; `trueup.toml` keeps the word `auto` (D12.9). `full` runs every document rule; `readme` turns off the changelog shape check, the page-status checks, the Vale style, and the `layout`/`readme` switches of `ref_check.toml`. The `ref_check.py` fold-in runs in both modes. |
 | `stale_days` | A positive integer, default 180 | How old a `status: current` page's `last_reviewed` may get before P8 reports it. |
-| `ignore` | A list of glob patterns | Left out of the survey and every finding. `apply` renders the globs into the managed `ref_check.toml` as `[scan] ignore`, so the `ref-check` hook and `trueup refs` skip the same paths as `check`, which reads the rendered text from the first run (I-2). A changed `ignore` list therefore gives a `file-managed:ref_check.toml` finding; apply it. Below the tier where `ref_check.toml` is managed, the checker runs with no config, so the globs do not reach `refcheck` there. `apply` also adds each glob to the `exclude` pattern of each pre-commit hook that gets the file names (ruff, eslint, Vale, shellcheck and the like), and to the gitleaks allowlist, so the hooks skip the same paths. A hook that scans the whole tree (`pass_filenames: false`) reads its own tool config instead. |
+| `ignore` | A list of glob patterns | Left out of the survey and every finding. `check`, `trueup lint` and `trueup refs` render the globs into the checker config of each run as `[scan] ignore`, so the checker skips the same paths as `check` (I-2). When the checker gets no config (see the `refcheck` row of [Document rules](#document-rules)), the globs do not reach `refcheck`. In copy mode, `apply` also renders the globs into the managed `ref_check.toml`, so a changed `ignore` list gives a `file-managed:ref_check.toml` finding; apply it. `trueup lint` drops each ignored path from its selection, and the gitleaks config that `check` renders holds the globs as an allowlist. |
 | `protect` | A list of glob patterns | `apply` never writes or removes a path these match; the matching finding turns manual. No move has a protected source or target, or one under a protected directory; a directory that holds a protected file never moves as one unit; a move never rewrites the links of a protected file. A `doc-misplaced` finding on a protected page stays in the plan: add a `[[keep]]` entry for a page that stays. |
 | `[root] allow` | A list of names or globs | Extra names the guard hook allows at the target's root, beyond the base list. Its length also widens the `root-budget` row's numeric budget by the same count. A root page that one of them names is not a `doc-misplaced` candidate; the same name in a subdirectory still is (D10.2). |
 | `[scratch] allow` | A list of globs | Paths the `scratch` row and the guard hook let through whatever the name looks like. A glob matches the repo-relative path or the basename, for example `docs/notes.md` or `notes-*.md`. |
@@ -689,9 +680,9 @@ beside them (D14.2).
 | `[refs] registry` | `true`, `false`; default `true` | `false` turns off check e of the checker: a marker word outside the closed registry (D2.2) is not a failure. |
 | `[refs] comments` | `true`, `false`; default `true` | `false` turns off check f of the checker: the suppression reason and the file header (D2.9). |
 | `[refs] links` | `true`, `false`; default `true` | `false` turns off check g of the checker: the document link rules (D2.10). |
-| `[refs] declared` | A list of paths or globs relative to the root; a `..` segment is allowed, and an absolute path is an error; default empty | The pages that declare the design ids for checks a and c of the checker (D16.2). A glob expands with `glob.glob(recursive=True)`, sorted. When this key or `[refs] id_forms` is set, the checker uses the configured reader (see [How the checker reads a file](#how-the-checker-reads-a-file)). With `id_forms` alone, the one page is `<docs_dir>/ARCHITECTURE.md`. A literal path that does not exist, or a glob that matches no file, gives one `no-target` failure for the entry, and the run exits 1 (I-56). The checker config holds the key as `[targets.arch] sources`, at every tier. A profile does not set it. |
-| `[refs] id_forms` | A list of at most 16 forms of at most 24 characters each, with no white space and no comma; default empty | The forms of a design id (D16.2), for example `["D<n>.<m>", "D<n>.<m>.<k>", "D-<n>", "I-<n>"]`. A lower-case name in angle brackets means one or more digits, and each other character is literal. A form holds one placeholder or more and one literal character or more. A placeholder cannot come just before a digit or another placeholder. No regular expression comes from the target, so a target cannot make the checker backtrack. With `declared` alone, the forms are `D<n>.<m>` and `I-<n>`. The checker config holds the key as `[targets.arch] forms`. A profile does not set it. |
-| `[refs] accepted_reader_changes` | A list of change names with no white space and no comma; default empty | The reader changes that fail now, not warn (D16.3). Until the target names a change here, a failure that the change adds is a warning (see [How the checker reads a file](#how-the-checker-reads-a-file)). The checker config holds the key as `[targets.arch] accepted`. This key alone does not turn on the configured reader. A profile does not set it. |
+| `[refs] declared` | A list of paths or globs relative to the root; a `..` segment is allowed, and an absolute path is an error; default empty | The pages that declare the design ids for checks a and c of the checker (D16.2). A glob expands with `glob.glob(recursive=True)`, sorted. When this key or `[refs] id_forms` is set, the checker uses the configured reader (see [How the checker reads a file](#how-the-checker-reads-a-file)). With `id_forms` alone, the one page is `<docs_dir>/ARCHITECTURE.md`. A literal path that does not exist, or a glob that matches no file, gives one `no-target` failure for the entry, and the run exits 1 (I-56). The checker config holds the key as `[targets.arch] sources`, at every tier. The built-in profiles do not set it. |
+| `[refs] id_forms` | A list of at most 16 forms of at most 24 characters each, with no white space and no comma; default empty | The forms of a design id (D16.2), for example `["D<n>.<m>", "D<n>.<m>.<k>", "D-<n>", "I-<n>"]`. A lower-case name in angle brackets means one or more digits, and each other character is literal. A form holds one placeholder or more and one literal character or more. A placeholder cannot come just before a digit or another placeholder. No regular expression comes from the target, so a target cannot make the checker backtrack. With `declared` alone, the forms are `D<n>.<m>` and `I-<n>`. The checker config holds the key as `[targets.arch] forms`. The built-in profiles do not set it. |
+| `[refs] accepted_reader_changes` | A list of change names with no white space and no comma; default empty | The reader changes that fail now, not warn (D16.3). Until the target names a change here, a failure that the change adds is a warning (see [How the checker reads a file](#how-the-checker-reads-a-file)). The checker config holds the key as `[targets.arch] accepted`. This key alone does not turn on the configured reader. The built-in profiles do not set it. |
 | `[eslint] suppressions` | A repo path; default `lint/typescript/eslint-suppressions.json` | The eslint bulk suppressions file of the target (D13.6). `trueup lint` passes it with `--suppressions-location` only when the file exists. |
 | `[python] pydoclint_baseline` | A repo path; default `lint/python/pydoclint-baseline.txt` | The pydoclint baseline of the target (D12.8). `trueup lint` passes it with `--baseline` only when the file exists. |
 | `[health] agents` | `true`, `false`; default `true` | `false` turns off the `agents-missing` and `claude-not-linked` rows. |
@@ -700,7 +691,7 @@ beside them (D14.2).
 | `[refs] law_archive` | A non-empty string: a path relative to the root, or absolute; default absent | The law archive of the `law` references (see [Law references](#law-references)). `apply` renders it into the managed `ref_check.toml` as `[targets.law] archive`, and `check`, `trueup lint` and `trueup refs` give it to the checker at every tier (D16.13). Absent, each `law` reference fails with `no-target`. Another value exits 2, and the message names `refs.law_archive`. `apply` writes the key to `trueup.toml` only when it is set. Do not write `[targets.law]` into `ref_check.toml` by hand: a hand edit is a `file-managed:ref_check.toml` finding, and the next `apply` removes it (D2.5). |
 | `[refs] layout` | `true`, `false`; default `true` | `false` turns check h of the checker off: `apply` renders `[checks] layout = false` into `ref_check.toml`, and `check` runs with it from the first run (D9.4). No page under `docs/` then gets a `no-front-matter`, `bad-field`, `misplaced`, `unindexed` or `duplicate-id` finding, also a page added later. For pages that keep fixed paths the project's own tools read, or a page a tool regenerates. One `[[keep]]` entry per page is the narrower choice: it keeps the rule for new pages. `apply` writes the key to `trueup.toml` when the file sets it, also at `true`, and when it is `false` (D14.3). A higher `[layout]` switch wins over a lower `[refs] layout`; checker check h and the typed docs target read only the `[layout]` switches (D15.29). |
 | `[languages]` | One key per language, value `strict`, `clean` or `off` | The mode of each of the eight languages: `python`, `rust`, `typescript`, `vue`, `shell`, `sql`, `go`, `php`. |
-| `[[eslint.off]]` | `rule`, `reason`; default none | One entry per eslint rule that is off for this repository, for a rule that flags normal code in bulk. `rule` is an eslint rule name, for example `security/detect-object-injection` (letters, digits, `@`, `_`, `.`, `-` and `/`). `reason` is one line and not empty. A missing key, an extra key, a bad name, an empty reason, a line break in it or a repeated rule exits 2. `apply` renders the entries into the managed `lint/typescript/eslint.config.mjs` as a last config object that sets each rule to `"off"`, with the reason as a comment on its line; `check` reports `file-managed:lint/typescript/eslint.config.mjs` until it is applied. eslint accepts `"off"` for a name it does not know, so a misspelt rule stays on. No effect while TypeScript and Vue are `off` (D13.5). A layer that sets `[[eslint.off]]`, or `[eslint] off = []`, replaces the lower list; there is no per-rule merge (D15.29). |
+| `[[eslint.off]]` | `rule`, `reason`; default none | One entry per eslint rule that is off for this repository, for a rule that flags normal code in bulk. `rule` is an eslint rule name, for example `security/detect-object-injection` (letters, digits, `@`, `_`, `.`, `-` and `/`). `reason` is one line and not empty. A missing key, an extra key, a bad name, an empty reason, a line break in it or a repeated rule exits 2. `trueup lint` renders the entries into the eslint config of each run as a last config object that sets each rule to `"off"`, with the reason as a comment on its line. There is no file to apply. eslint accepts `"off"` for a name it does not know, so a misspelt rule stays on. No effect while TypeScript and Vue are `off` (D13.5). A layer that sets `[[eslint.off]]`, or `[eslint] off = []`, replaces the lower list; there is no per-rule merge (D15.29). |
 | `[[keep]]` | `id`, `reason` | One entry per finding a person declined, with the reason. A keep id keeps the finding with that id, and each finding whose id starts with the keep id and `:` (see [Ids, lines and keeps](#ids-lines-and-keeps)). A kept id never rejoins the plan. A keep that matches no finding gives a `keep-stale` info row. A kept `doc-misplaced:<path>` id keeps a page where it is: the page gets no move, and a directory that holds it never moves as one unit (D10.6). A kept `refcheck:` id also goes into the `[keep]` table of the managed `ref_check.toml`, prefix removed, so the `ref-check` hook and `trueup refs` keep it too; after a new entry, `apply` the `file-managed:ref_check.toml` finding, else the hook still fails on that line (D9.2). |
 
 `config.KEYS` is the sorted tuple of every dotted key that a config
@@ -809,8 +800,8 @@ cannot read leaves the `duplicate` group. The gitleaks copy (see
 [Secret engine](#secret-engine)) skips a symlink whose target is outside
 the root.
 
-The checker `ref_check.py` ships as one file and cannot import `fsread`
-(decision 14). Its own reader has the same rules and a 16 MiB cap
+The checker `ref_check.py` ships as one file and cannot import `fsread`.
+Its own reader has the same rules and a 16 MiB cap
 (D16.10). A device, a FIFO, a file over the cap and a symlink out of the
 root each give one `unreadable` row.
 
@@ -823,8 +814,8 @@ Two subprocess readers do not use `fsread`. Each has its own guard
   target still changes the tree identity. A FIFO, a device or a socket
   gets the fixed value `""` and is never opened. The identity of a
   regular file does not change. The identity of a tree that lists a
-  symlink does change, so a plan saved over such a tree before round 16
-  gives exit 2 one time (see [Saved plan](#saved-plan)).
+  symlink does change, so a plan saved over such a tree before
+  2026-11-09 (round 16) gives exit 2 one time (see [Saved plan](#saved-plan)).
 - The `tokei` call has a time limit of 60 s (`survey.TOKEI_TIMEOUT_S`),
   because tokei opens `.gitignore` during its walk, and a `.gitignore`
   symlink to a FIFO stops it. On expiry the survey uses the built-in
@@ -971,9 +962,10 @@ then `docs/`. GitHub reads file names in any case. Research date:
 GitHub does not read `GOVERNANCE.md` (it is not in GitHub's list), so a
 root `GOVERNANCE.md` is a `doc-misplaced` candidate. A licence file has
 no default: GitHub reads it only in the repository itself. The guard's
-base list of root names does not hold the health names, so the guard
-denies a new root health file until `[root] allow` names it; `.github/`
-is a place that GitHub reads first, so write a new health file there.
+base list of root names holds the standard root pages
+(`CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `SUPPORT.md`
+and `ACCESSIBILITY.md`, in any case) and `CODEOWNERS`, so the guard asks
+no question about a new root file with one of these names.
 
 #### Managed set by tier
 
@@ -1019,7 +1011,7 @@ and T1 and `full` at T2 and T3.
 | Rule | Checks | Notes |
 |---|---|---|
 | `readme-length` (R10) | `README.md` over 200 lines. | warn, manual: split the page |
-| `prose` (W1) | A banned word or phrase from `trueup/data/banned.txt`, case-free, whole word, in Markdown prose or in a source comment of the eight languages. A `banned.txt` line is either a bare word or `word => <regex>`; a form entry bans only the shape after `=>` (`leverage` and `underscore` as verbs, `unlock` in its hype sense), so the same word used as a noun stays silent (D6.9, D8.5). The built-in list has no `harness` entry: decision 11 of D15 took it out of `banned.txt` and out of the Vale `Banned.yml` (D15.16, I-25), so `harness` in any use gives no row, and the two files stay equal line for line. A Markdown block that quotes the list gives no finding: a list item with its indented lines (nested items and a loose continuation included), or a paragraph with the lines up to a blank line (a list it introduces included), whose first three lines hold a cue (`banned`, `never use`, `do not use`, `don't use`, `forbidden`, `prohibited` or `not allowed`); a heading, quote or table row is neutral. The Vale template holds the same rule as `BlockIgnores`, proven on one table of twenty-one shapes, and a source comment keeps the plain rule (D8.4). In the Markdown report of a full `check`, a finding whose evidence names 10 or more distinct banned words also gets one hint line, `hint: this file may quote the list on purpose; add a [[keep]] entry with a reason`. | error, manual, one finding per file |
+| `prose` (W1) | A banned word or phrase from `trueup/data/banned.txt`, case-free, whole word, in Markdown prose or in a source comment of the eight languages. A `banned.txt` line is either a bare word or `word => <regex>`; a form entry bans only the shape after `=>` (`leverage` and `underscore` as verbs, `unlock` in its hype sense), so the same word used as a noun stays silent (D6.9, D8.5). The built-in list has no `harness` entry: round 15 took it out of `banned.txt` and out of the Vale `Banned.yml` (D15.16, I-25), so `harness` in any use gives no row, and the two files stay equal line for line. A Markdown block that quotes the list gives no finding: a list item with its indented lines (nested items and a loose continuation included), or a paragraph with the lines up to a blank line (a list it introduces included), whose first three lines hold a cue (`banned`, `never use`, `do not use`, `don't use`, `forbidden`, `prohibited` or `not allowed`); a heading, quote or table row is neutral. The Vale template holds the same rule as `BlockIgnores`, proven on one table of twenty-one shapes, and a source comment keeps the plain rule (D8.4). In the Markdown report of a full `check`, a finding whose evidence names 10 or more distinct banned words also gets one hint line, `hint: this file may quote the list on purpose; add a [[keep]] entry with a reason`. | error, manual, one finding per file |
 | `changelog` (C6) | `CHANGELOG.md`, when present: an `## [Unreleased]` heading, `## [x.y.z] - YYYY-MM-DD` versions in descending order, and `### <type>` headings only from Added, Changed, Deprecated, Removed, Fixed, Security. | error per defect, manual; id `changelog:<path>:<fp>` (see [Ids, lines and keeps](#ids-lines-and-keeps)); `docs = "full"` only |
 | `refs-reader-change` | One line `ref_check: <n> warnings from reader change <name>; ...` in the output of the `refcheck` run (D16.3, see [How the checker reads a file](#how-the-checker-reads-a-file)). One finding for each change: id `refs-reader-change:<name>`, evidence `<n> warnings from reader change <name>`, action `fix the markers, or add <name> to [refs] accepted_reader_changes in trueup.toml to fail on them`. | info, manual; changes no exit code |
 | `superseded` (P7) | A `status: superseded` page under `docs/` with no `superseded_by`, or one naming an id no page under `docs/` declares. | error, manual; `docs = "full"` only |
@@ -1118,7 +1110,7 @@ Design ids, for checks a and c (D16.2):
 - With none of `[refs] declared`, `[refs] id_forms` and
   `[refs] accepted_reader_changes` set, the checker reads
   `<docs_dir>/ARCHITECTURE.md` with the patterns of D2.8, and gives the
-  rows of the release before round 16 (I-54).
+  rows that it gave before these keys existed (I-54).
 - With `declared` or `id_forms` set, the configured reader reads each
   source. On a line outside a fenced block, the id is the first token
   of one of these shapes: a heading of any level (`## D18.2 Wire
@@ -1149,7 +1141,7 @@ Reader changes (D16.3):
 
 - A release that widens what the checker reads registers the change in
   `ref_check.READER_CHANGES` for that one release. The table is empty in
-  this release. The Rust reader of D15.19 is not registered: a target
+  0.1.0a1. The Rust reader of D15.19 is not registered: a target
   with no new config behaves as before.
 - A failure from a marker at a position that a registered change
   matches is a warning, unless the target names the change in
@@ -1289,12 +1281,12 @@ which always tests the full survey.
 
 | Rule | When | Severity | Auto |
 |---|---|---|---|
-| `setup` | T0 or T1, `trueup.toml` is absent, and no user default file exists. One row, id `setup:trueup.toml`, in place of the `config` and `tool-missing` rows. The evidence is `<n> setup files: <paths>`; the action is `run trueup apply --ids setup:trueup.toml to write them`. No row when the tier set is empty (T0). | info | yes, by its id only; `--all-auto` never takes it. `apply --ids setup:trueup.toml` writes `trueup.toml`, the one file of the tier set at T0 and T1 since D14.8 |
+| `setup` | T1, `trueup.toml` is absent, and no user default file exists. One row, id `setup:trueup.toml`, in place of the `config` and `tool-missing` rows. The evidence is `<n> setup files: <paths>`; the action is `run trueup apply --ids setup:trueup.toml to write them`. No row when the tier set is empty (T0). | info | yes, by its id only; `--all-auto` never takes it. `apply --ids setup:trueup.toml` writes `trueup.toml`, the one file of the tier set at T1 since D14.8 |
 | `config` | `trueup.toml` is absent and no user default file exists (T2 and up), or a present language has no mode. Under a user default file, no `config:trueup.toml` row comes. | error (or `info` for a language below the present line count) | yes for the error case |
 | `file-managed` | A managed file of the tier set (see [Managed set by tier](#managed-set-by-tier)) is absent, or differs and still carries the managed header. Blank lines and comment lines do not count as a difference. | error | yes |
 | `file-managed` | A managed file differs and carries no managed header. | error | no; `trueup` never overwrites an unmanaged file |
 | `file-managed` | Copy mode: the module at `[refs] path` is not byte-equal to the copy `trueup` ships, and its first line is the trueup header (a copy an earlier trueup wrote, D9.3). | error | yes |
-| `file-managed` | Copy mode: the module at `[refs] path` is not byte-equal to the copy `trueup` ships, and has no trueup header (a person's own file, or a copy from before 2026-10-07). | warn | no; an unedited copy from an earlier trueup: `git rm` it, then `apply` the absent-copy error that follows; else merge by hand |
+| `file-managed` | Copy mode: the module at `[refs] path` is not byte-equal to the copy `trueup` ships, and has no trueup header (a person's own file, or a copy from a trueup before 2026-10-07). | warn | no; an unedited copy from an earlier trueup: `git rm` it, then `apply` the absent-copy error that follows; else merge by hand |
 | `refs-copy` | Global mode: a file sits at `ref_check.py` of the root, and nothing runs it (D9.1). | info | no; `git rm ref_check.py` when it is trueup's old copy |
 | `gitignore` | `.gitignore` lacks a line `trueup` needs (`.scratch/`), and `[scratch] gitignore` is `true`. | error | yes |
 | `managed-legacy` | A file of the old managed lint tree that an earlier trueup wrote: a `LEGACY_PATHS` path (see [Moving from the managed lint tree](../how-to/upgrade-trueup.md#moving-from-the-managed-lint-tree)), or a file under `lint/` whose first line is the managed header or whose JSON holds `"_managed": "trueup"`. A file with no such mark is the target's own and gets no row. The action is `trueup no longer manages this file; remove it when you have moved to trueup lint (see the reference page)`. | info | no; the row informs, it never asks (I-42) |
@@ -1346,9 +1338,9 @@ names the level of the nearest control, when one exists.
 
 ### Gaps
 
-On 2026-11-03 this machine had `gitleaks` on the path, and did not have
-`osv-scanner`, `gosec` as a standalone tool, or `semgrep`. So these
-parts are not verified here:
+On 2026-11-03 the maintainer's machine had `gitleaks` on the path, and
+did not have `osv-scanner`, `gosec` as a standalone tool, or `semgrep`.
+So these parts are not verified:
 
 - gitleaks: most tests use a fake `gitleaks` script that writes a known
   report. The three tests of a real gitleaks run in
@@ -1416,7 +1408,7 @@ on the path, else the note in the brackets, for example
   the full run copies every surveyed file, and `check --changed` copies
   the changed files only (D14.14). So a build tree that git ignores, or
   any other path outside the survey, is not scanned and gives no
-  finding. `check` on target-rust/src takes 2.5 s.
+  finding.
 - A symlink whose resolved target is outside the root is not copied for gitleaks (D15.22).
 - `trueup baseline` and `check --baseline` run `gitleaks git .` with the
   same options on the history. They give `secret-history` findings, so
@@ -1466,22 +1458,24 @@ value under another rule (I-59). trueup never reads the matched text
 pattern matched it on four line shapes. A test value of one project
 stays a `[[keep]]` entry.
 
-The text below describes the pre-commit hook and the CI workflow that
-trueup managed before D14.8. `trueup lint` runs no gitleaks hook, and
-the CI template runs `trueup check`, whose secret rows run gitleaks.
+The two paragraphs that follow are history. They describe the
+pre-commit hook and the CI workflow that trueup managed until round 14
+(D14.8). Today `trueup lint` runs no gitleaks hook, and the CI template
+runs `trueup check`, whose secret rows run gitleaks.
 
-The managed pre-commit file has a shared `gitleaks` pre-commit hook,
-after `ref-check` and before the language hooks. It runs
+The old managed pre-commit file had a shared `gitleaks` pre-commit hook,
+after `ref-check` and before the language hooks. It ran
 `gitleaks git --pre-commit --staged --redact --no-banner --config
-lint/gitleaks/gitleaks.toml`. Below T2 the config file is not in the set,
-so the hook has no `--config` part and gitleaks uses its own defaults. When `gitleaks` is not on the path, it
-prints `gitleaks not on the path: secret scan skipped` and passes. The
-hook text is the same on every machine (I-33).
+lint/gitleaks/gitleaks.toml`. Below T2 the config file was not in the set,
+so the hook had no `--config` part and gitleaks used its own defaults.
+When `gitleaks` was not on the path, it printed
+`gitleaks not on the path: secret scan skipped` and passed.
 
-The managed CI workflow installs a fixed gitleaks version and checks the
-archive with `sha256sum -c`. After `pre-commit run --all-files`, it runs
+The old managed CI workflow installed a fixed gitleaks version and
+checked the archive with `sha256sum -c`. After
+`pre-commit run --all-files`, it ran
 `gitleaks git . --redact --no-banner --config lint/gitleaks/gitleaks.toml`
-on the full history (`fetch-depth: 0`). So CI enforces the scan.
+on the full history (`fetch-depth: 0`).
 
 ## Rule sets
 
@@ -1493,11 +1487,11 @@ them and, where a tool exists, adds a duplication check and a dead-code
 check. A tool missing from the target gives a `tool-missing` finding
 (above); `trueup` still ships the rule set.
 
-The table below states which hooks of each rule set a test on this
-machine ran end to end, against a small passing and a small failing
-sample. "No test" means the tool is on this machine but no test runs that
-hook. "Unverified here" means the tool is not on this machine, so no test ran
-that hook; where a test for it exists, the test skips and names the tool,
+The table below states which hooks of each rule set a test on the
+maintainer's machine ran end to end, against a small passing and a small
+failing sample. "No test" means the tool is on that machine but no test
+runs that hook. "Unverified here" means the tool is not on that machine,
+so no test ran that hook; where a test for it exists, the test skips and names the tool,
 so `pytest -rs` lists it. A tool missing from
 a target is not a defect in the rule set: `trueup` reports it as a
 `tool-missing` finding.
@@ -1521,11 +1515,12 @@ The strict rule sets set these limits (D15.28):
 - phpmd strict: CyclomaticComplexity reportLevel 11 and ExcessiveMethodLength minimum 61 (allow 10 and 60); parameters stay at 6 (allows 5).
 - Python strict ruff selects `ALL` and ignores `COM812`, `ISC001`, `CPY`, `S603` and `S607`, each with a reason in the file. `CPY` is off because the comment standard rules out a copyright header; ruff 0.17 raises `CPY001` without the ignore (D16.7). On 2026-11-12 the strict ruff tests passed with ruff 0.15.9 and 0.17.4.
 - Function length: Python 50 statements (ruff PLR0915, no line limit), none for shell and SQL. The function-length row of `docs/explanation/research-code-rules.md` says the same.
-- A rule set has no nightly commands: the RuleSet.nightly field and all its values are removed, and the rules module docstring no longer mentions a nightly CI job.
+- A rule set has no nightly commands.
 
-The five comment-standard languages of D1.5 follow a different rule: in
-`tests/test_lint_fixtures.py`, a test that needs a missing tool fails. It
-does not skip.
+The tests of the five languages of the comment standard (Python, Rust,
+TypeScript, shell and SQL, D1.5) follow the same rule: in
+`tests/test_lint_fixtures.py`, a test that needs a missing tool skips
+and names the tool (D15.38).
 
 Four facts about the hooks that a person sees at commit time:
 
@@ -1554,7 +1549,8 @@ Four facts about the hooks that a person sees at commit time:
   the hook runs as before. When a fix makes a count too high, the hook
   exits 2 with `There are suppressions left that do not occur anymore`:
   run the prune command and commit the smaller file, so the count only
-  goes down. The commands, from the root:
+  goes down. The commands, from the root (the paths are those of the
+  old managed tree; the note after this list says what to use now):
 
   ```
   # create the file: freeze the errors of today
@@ -1575,13 +1571,13 @@ Four facts about the hooks that a person sees at commit time:
   To see the full count before any fix, run the entry with `-W` in place
   of each `-D`: every crate compiles and every lint prints as a warning.
 
-Since D14.6, `trueup lint` runs the hooks above with configs that it
-renders at run time, so the paths `lint/typescript/eslint.config.mjs`
+Since round 14 (D14.6), `trueup lint` runs the hooks above with configs
+that it renders at run time, so the paths `lint/typescript/eslint.config.mjs`
 and `--prefix lint/typescript` of the suppressions bullet are the old
 managed tree. The suppressions file itself stays the target's: its path
 is `[eslint] suppressions`, and `trueup lint` passes it only when it
 exists. `trueup lint` passes no extra eslint option, and its eslint
-config exists only while a run lasts, so in this release a person runs
+config exists only while a run lasts, so a person runs
 the create and prune commands with an eslint config of their own. The
 pydoclint baseline follows the same rule: its path is `[python]
 pydoclint_baseline`.
@@ -1641,11 +1637,16 @@ The `history` basis also holds in these cases (D15.25):
   then ends with `; history unavailable (shallow clone)`.
 
 A directory becomes one move of kind `dir` (`move:misc/design/` to
-`docs/design/`) when each Markdown file under it is a candidate with the
-same target directory, it holds two candidates or more, or one candidate
-and another file, evidence places each non-Markdown file under the target
-too, no file under it matches `protect`, and the target directory is
-empty and no other move fills it. The largest such directory wins. Its
+`docs/design/`) when all of these hold:
+
+- each Markdown file under it is a candidate with the same target
+  directory;
+- it holds two candidates or more, or one candidate and another file;
+- evidence places each non-Markdown file under the target too;
+- no file under it matches `protect`;
+- the target directory is empty and no other move fills it.
+
+The largest such directory wins. Its
 other files move with it. Each other page gets its own move of kind
 `file`.
 
@@ -1700,7 +1701,7 @@ Run the steps in this order:
 
 1. `check`: read the plan and the move plan.
 2. `apply --ids <approved automatic ids>`, or `apply --all-auto`: remove
-   copies and junk, for example `README.old.md`. This can change the
+   copies and junk, for example `notes.md` or `x.bak`. This can change the
    evidence of a move.
 3. `check` again: take the move ids from this move plan.
 4. `apply --ids '<move ids>'`: run the approved moves.
@@ -1825,8 +1826,7 @@ that hand count of true-positive findings in the five scored categories
 | target-mixed/src (Python, shell, SQL, TypeScript) | 30 | 30 | 6 | 20 |
 
 Ordering the repositories by v2 score gives exactly this trial rank; v1
-does not (it ranks meridian 4th, target-go last, and swaps target-py/src and
-target-php). meridian's v1 score came entirely from 19 `duplicate`
+does not (it ranks meridian 4th and target-go last). meridian's v1 score came entirely from 19 `duplicate`
 findings inside one intentionally-duplicated fixture tree, judged noise;
 the v2 duplicate exemption removes all of them, so its score drops to 0.
 target-go's v1 score carried about 28 of its 38 points (the full
@@ -2127,7 +2127,7 @@ never triggers `PostToolUse`.
 
 ### Hook times (2026-11-09)
 
-The hook log of this machine holds 13,069 hook runs from 2026-10-29 to
+The hook log of the maintainer's machine holds 13,069 hook runs from 2026-10-29 to
 2026-11-09 (`python3 scripts/hook_times.py`). The times are in-process
 times: they start after Python and the imports are ready.
 
@@ -2139,7 +2139,7 @@ times: they start after Python and the imports are ready.
 | `session` | not recorded | 0.174 s | not recorded |
 
 The wall time of one `guard` call, with the interpreter start, is 0.07
-to 0.31 s (the soundness audit of 2026-11-02). The 95th percentile of
+to 0.31 s (measured on 2026-11-02). The 95th percentile of
 `stop` is above the 1 s goal of I-17. The largest recorded `stop` time
 is far below the 30 s limit of the `Stop` entry.
 

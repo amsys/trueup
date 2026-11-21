@@ -16,7 +16,7 @@ refers to it by that id.
 Sections D1 to D4 and invariants I-1 to I-12 are the design of the meridian
 check, the reference checker that the archived meridian project built
 before it merged into this repository on 2026-10-03; they keep their ids
-and their text. Sections D5 and D6, and invariants I-13 to I-27, are
+and their text. Sections D5 to D16, and invariants I-13 to I-59, are
 trueup's own. The tests of this repository cite these ids. The decision
 numbers and the ids that start with Q or R stay in the archived meridian
 repository's own design and brief. `trueup/ref_check.py` is the one
@@ -76,6 +76,7 @@ older sections in round order.
 | Tiers, defect fixes, hot spots | D14.12 to D14.14 |
 | Round 14: universal config | D14.1 to D14.23 |
 | Round 15: trust on a stranger's repository | D15.1 to D15.38 |
+| Round 16: declared sources, reader changes, bounded reads, the law archive | D16.1 to D16.13 |
 
 ## D1.1 — The checker, `trueup/ref_check.py`
 
@@ -5531,9 +5532,9 @@ Decision 15.
 ## D16.0 — Scope and order
 
 Round 16 has thirteen sections, D16.1 to D16.13. D16.13 came after the
-first public alpha. Each section names one change. The D16 headings come first in this page, because a test can
-cite only a declared id. The Verification claims come last. On
-2026-11-21 they moved to
+first public alpha. Each section names one change. A test can cite only a declared id, so
+the D16 headings came before the tests. The Verification claims came
+last. On 2026-11-21 they moved to
 [the design verification page](reference/design-verification.md);
 `[refs] declared` in `trueup.toml` names that page as a second source
 (D16.2).
@@ -5656,7 +5657,8 @@ installed, and prints one line that names tokei and the limit.
 ## D16.11 — Documents
 
 This page gets the D16 headings and I-54 to I-59 first, and the
-Verification claims last. `docs/reference/trueup.md`, the purpose page
+Verification claims last (since 2026-11-21 the claims are on
+[the design verification page](reference/design-verification.md)). `docs/reference/trueup.md`, the purpose page
 and the skill follow the code of this round.
 
 ## D16.12 — Small ledger items

@@ -93,7 +93,8 @@ purpose.
 For a CI that is not GitHub Actions, add the same two commands, the
 install and `trueup check --baseline --root .`, to the job that the
 target already runs. A ratchet that reads a coverage report needs that
-report from the same job (see the reference).
+report from the same job (see
+[the baseline section of the reference](../reference/trueup.md#baseline)).
 
 ## 3. Read what makes it fail
 
@@ -112,7 +113,7 @@ baseline, or on a bad `trueup.toml`.
 
 The gate does not read the score. The score stays in the report as
 information, so a clean deletion, which changes the file count and so
-the score, does not fail the gate (D15.21). The gate does not fail on a
+the score, does not fail the gate. The gate does not fail on a
 finding the baseline already counted, even though the plan is still not
 empty; that is the point of a baseline for a repository with a backlog.
 

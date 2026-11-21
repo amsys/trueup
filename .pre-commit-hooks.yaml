@@ -1,6 +1,6 @@
 - id: trueup-baseline
   name: trueup baseline gate
-  description: "Fail on a new finding, a score rise, or a ratchet drop against .trueup-baseline.json (D6.7)"
+  description: "Fail on a new finding or a ratchet drop against .trueup-baseline.json (D6.7)"
   entry: trueup check --baseline --root .
   language: python
   pass_filenames: false

@@ -87,8 +87,11 @@ tier looks wrong for the repository. On a later run, with `trueup.toml`
 already in place, the skill does not ask these again; it asks only about
 the findings in the plan.
 
-At tier T0 or T1, the setup is one opt-in row, `setup:trueup.toml`. From
-T2, the `config:trueup.toml` row asks for the file.
+At tier T1, the setup is one opt-in row, `setup:trueup.toml`. From
+T2, the `config:trueup.toml` row asks for the file. At T0 no row asks
+for the file, and `apply --ids setup:trueup.toml` exits 2. To set trueup
+up on a T0 repository, write a `trueup.toml` that holds the line
+`version = 1`, then run `check` again.
 
 ## 5. Approve and apply
 
@@ -106,7 +109,7 @@ with nothing written; commit or stash the change first, or pass
 `--allow-dirty`. It never runs `git commit`, `git push`, or `git clean`,
 so your working tree stays yours to commit.
 
-An automatic row needs content to prove it. `apply` removes a scratch
+An automatic row needs proof. `apply` removes a scratch
 file only when git tracks it and its name proves scratch (`notes.md`,
 `tmp.txt`, `x.bak`); it uses `git rm`, so git can restore it. A name
 that only looks like scratch (`README.old.md`, `scratch_fold.rs`) is a

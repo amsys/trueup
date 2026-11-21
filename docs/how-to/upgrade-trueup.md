@@ -9,13 +9,19 @@ last_reviewed: 2026-11-20
 # Upgrade trueup
 
 Read this page when a target moves to a new version of trueup. It gives
-the steps to remove the old managed lint tree, and for each version the
-changes that can change the result of a run. The commands, keys and
+the steps to remove the old managed lint tree, and the dated changes that
+can change the result of a run. The commands, keys and
 findings are in [the trueup reference](../reference/trueup.md).
+
+An id such as `D15.6` names a section of
+[the architecture](../ARCHITECTURE.md), and
+[the index](../README.md#words-that-the-records-use) explains a round
+and a wave. You do not need them to follow the steps.
 
 ## Moving from the managed lint tree
 
-Before D14.8, `apply` wrote a tree of lint files into the target. Now
+An earlier trueup wrote a tree of lint files into the target with
+`apply` (until D14.8, in round 14). Now
 the target keeps only `trueup.toml` (and, in copy mode, the checker
 pair), and `trueup lint` renders the tool configs at run time. The old
 files stay where they are until the person removes them; trueup never
@@ -76,15 +82,20 @@ Since 2026-11-02 the old paths are not in the list of trueup's own
 files that the tier pick does not count (`survey.TRUEUP_OWN_PATHS`,
 D15.37). They count for the tier and the root budget, so a target that
 still holds them can change tier (a T0 tree can reach T2); step 5
-removes them. The
-lockfile exemption of the old `lint/typescript/package.json` stays
-(D8.3).
+removes them. The lockfile exemption of the old
+`lint/typescript/package.json` stays (D8.3).
 
 A repository can also use the `trueup-lint` hook of
 `.pre-commit-hooks.yaml` (`language: python`) as a `repo:` entry, with
 `https://github.com/amsys/trueup` as `repo:` and a tag as `rev:`.
 
 ## Upgrade notes
+
+These notes come from the work before the first public version, 0.1.0a1.
+Most have a date, not a version number, and some name the round of the
+work. In a note, "this version" and "this release" mean the trueup of
+that date. A target that first ran trueup at 0.1.0a1 or later needs none
+of them.
 
 **The JSON managed-file marker (v2).** A managed JSON file this repository
 renders with no comment syntax (`lint/jscpd.json`,
@@ -99,12 +110,22 @@ unaffected: it was already a manual, unmanaged finding, and stays one.
 
 **Checker modes (2026-10-07).** A target set up before this version has
 a checker copy at `ref_check.py` and a hook entry `python3 ref_check.py
---root .`. With no `[refs] mode` key it is now in global mode. The steps
-to move it:
+--root .`. With no `[refs] mode` key it is now in global mode.
 
-1. Install trueup once on the machine: `uv tool install --editable
-   <plugin root>` (the editable install follows the trueup working tree),
-   or `pipx install <plugin root>`. Each machine that commits needs this.
+The steps below are those of 2026-10-07. A trueup of today does not
+manage `.pre-commit-config.yaml`, so `check` gives no
+`file-managed:.pre-commit-config.yaml` row, and the pre-commit template
+has no `ref-check` hook. With a trueup of today, do step 1, then
+`git rm ref_check.py`, and replace the old hook entry by hand with the
+entry that `trueup template pre-commit` prints (see
+[Moving from the managed lint tree](#moving-from-the-managed-lint-tree)).
+
+The steps of 2026-10-07:
+
+1. Install trueup once on the machine:
+   `uv tool install git+https://github.com/amsys/trueup`, or
+   `pipx install git+https://github.com/amsys/trueup`. Each machine that
+   commits needs this.
 2. Run `check`. Expect `file-managed:.pre-commit-config.yaml` (the hook
    entry becomes `trueup refs --root .`), `file-managed:ref_check.toml`
    when a `refcheck:` id is kept (the `[keep]` table), the `info` finding
@@ -115,19 +136,19 @@ to move it:
 4. Run `pre-commit run --all-files`: the `ref-check` hook now passes on
    the kept findings.
 
-A repository whose CI runs the hooks keeps the copy: set `[refs] mode =
-"copy"` before step 2. Its old copy has no trueup header, so the first
+A repository whose CI runs the hooks and cannot install trueup keeps the
+copy: set `[refs] mode = "copy"` before step 2. Its old copy has no trueup header, so the first
 `check` gives the manual `file-managed` warn: `git rm ref_check.py`, run
 `check` again, and `apply` the automatic error for the absent copy. From
 then on the copy carries the header, and `apply` rewrites it at each
-update. CI cannot install trueup until it has a git source.
+update. A CI that can install trueup does it as
+[Gate CI with a baseline](gate-ci-with-a-baseline.md#before-you-start)
+shows, and needs no copy.
 
 A target whose `trueup.toml` set `[refs] path` before this version, with
 no `mode`, now exits 2 on every command: add `mode = "copy"` above the
 `path` line. The `refs-copy` finding looks at `ref_check.py` of the root
 only; an old copy at another path gets no finding, so delete it by hand.
-`target-rust/src` is one target to move; `target-mixed/src` and this
-repository's calibration repositories are others.
 
 **`[scan] ignore` (2026-10-16).** A target with `ignore` globs gets
 `file-managed:ref_check.toml`: the rendered file now holds `[scan] ignore`.
@@ -154,10 +175,7 @@ result of a run that passed before:
   (`secret-content:<path>:<n>` or `changelog:<path>:<n>`) now matches
   nothing, and `check` shows a `keep-stale` row for it. Replace it with
   the new id from `check --json`, or keep the file by prefix
-  (`secret-content:<path>`). `target-rust/src` holds such a keep. This
-  repository's own `trueup.toml` dropped the keep
-  `prose:tests/test_docrules.py`: its `keep-stale` row showed that it
-  kept nothing.
+  (`secret-content:<path>`).
 - The keys of `.trueup-baseline.json` do not change, so an existing
   baseline file stays valid.
 
@@ -187,8 +205,8 @@ of a run:
   is `info` (D15.17).
 - The checker reads more Markdown forms (D15.18) and Rust `///` and
   `//!` lines as marker positions (D15.19). A Rust target can get many
-  more `refcheck` rows.
-  Real target: target-rust/src gives 670 failures and 617 references (was 11 and 0): 617 `unknown-id`, 44 `malformed`, 9 `unregistered`.
+  more `refcheck` rows: one private Rust target went from 11 failures
+  to 670.
 
 **Trust round, wave C (2026-11-03).** These changes can change the
 result of a run:
@@ -238,8 +256,8 @@ change the result of a run:
   `refs-reader-change:<name>` info row, and the exit code does not
   change. Fix the markers in that release, because the next release
   fails on them. To fail on them at once, add the name to
-  `[refs] accepted_reader_changes`. No change is registered in this
-  release.
+  `[refs] accepted_reader_changes`. No change is registered in
+  0.1.0a1.
 - A design on more than one page, or with other id forms, can set
   `[refs] declared` and `[refs] id_forms` (D16.2). A source that is
   missing on a machine, for example a page outside the root in a clone,
@@ -261,7 +279,7 @@ change the result of a run:
 - A `move:` id stops with `failed <move id>: refused: <rel> ...` when a
   tracked Markdown page is over the read cap, or is a symlink to a
   regular file out of the root, because the run cannot see the links of
-  that page (owner ruling 11 of round 16). Move such a page by hand. A
+  that page. Move such a page by hand. A
   device, a FIFO and a page that does not decode do not stop a move.
 - The tree identity of a listed symlink is the sha of its link text
   (D16.10). A plan saved over such a tree before this release gives

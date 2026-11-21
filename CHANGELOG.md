@@ -18,9 +18,10 @@ numbers follow [PEP 440](https://peps.python.org/pep-0440/).
 
 - The claims of the design, the section `## Verification`, moved from
   `docs/ARCHITECTURE.md` to `docs/reference/design-verification.md`.
-  `[refs] declared` in `trueup.toml` names both pages, so check c reads
-  the claims on the new page. A test fails when no page that check c
-  reads holds the claims.
+  `[refs] declared` in `trueup.toml` names both pages, so `trueup refs`
+  reads the claims on the new page: its check c proves that each claim
+  has a test. A test fails when no page that check c reads holds the
+  claims.
 
 ## [0.1.0a1] - 2026-11-16
 

@@ -35,8 +35,9 @@ What sets it apart from other tools:
    and prove that trueup brings it back, and that more mess never scores
    better.
 5. **It runs offline.** The same input gives the same report. trueup
-   opens no pull request. The one network lookup, a registry check in the
-   plugin's install guard, is off unless you set `[guard] registry = true`.
+   opens no pull request. Two things use the network, and both are off
+   until you ask: `trueup lint --install`, and a registry check in the
+   plugin's install guard, which needs `[guard] registry = true`.
 
 ## Install
 
@@ -100,7 +101,8 @@ score 0 (tier T0)
 on bad input or an internal error.
 
 - `trueup check --changed` scopes the check to the files that differ from
-  `HEAD`; see [the hooks](docs/reference/trueup.md#hooks).
+  `HEAD` and the untracked files; see
+  [the command line](docs/reference/trueup.md#command-line).
 - `trueup baseline` freezes today's count, so CI fails only on a new
   problem; see [gate CI with a baseline](docs/how-to/gate-ci-with-a-baseline.md).
 - `trueup apply` carries out the findings that you approve by id; in

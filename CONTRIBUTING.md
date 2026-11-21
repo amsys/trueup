@@ -23,7 +23,7 @@ pip install -e . pytest
 ```
 
 The package has no dependency. The full test suite has about 2,000
-tests and takes about 15 minutes; `pytest tests/test_cli.py` runs one
+tests and takes about 3 minutes; `pytest tests/test_cli.py` runs one
 file. Do not run two suites at the same time on one machine: the
 `golangci-lint` tests fail when a second run is active.
 

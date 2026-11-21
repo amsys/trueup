@@ -29,7 +29,7 @@ index is [docs/README.md](../README.md).
    |---|---|
    | `id` | Lower-case words with hyphens. No other page uses it. |
    | `type` | `tutorial`, `how-to`, `reference` or `explanation` |
-   | `audience` | One value or more of `maintainer`, `agent`, `user` |
+   | `audience` | A list of one value or more of `maintainer`, `agent`, `user`, for example `[maintainer, agent]` |
    | `status` | `draft`, `current` or `superseded` |
    | `last_reviewed` | An ISO date, `YYYY-MM-DD` |
 
@@ -45,7 +45,8 @@ The full rules and failure kinds are in
 
 The root `README.md` obeys these rules. Check i reads no other file.
 
-1. **Title.** Line 1 is a heading of level 1.
+1. **Title.** The first text is a heading of level 1. Blank lines and an
+   HTML block can come before it.
 2. **Badge block.** A badge after the title stays inside one run of lines
    with no other text between them.
 3. **Description.** A paragraph follows the title block and the badge
@@ -53,7 +54,8 @@ The root `README.md` obeys these rules. Check i reads no other file.
 4. **Sections.** The file has a level 2 heading `Install` or
    `Installation`, one `Usage`, and one `License`.
 5. **Licence.** `License` is the last section, and the root has a file
-   `LICENSE`, `LICENSE.md` or `COPYING`.
+   named `LICENSE`, `LICENCE` or `COPYING`, in any case and with any
+   extension.
 6. **Index link.** The file links to `docs/README.md`.
 
 The full rules and failure kinds are in
@@ -66,15 +68,16 @@ The full rules and failure kinds are in
 proposed rule list of
 [research-documentation](../explanation/research-documentation.md#proposed-rule-list),
 on any repository it checks, with or without a `trueup.toml`. C6, P7 and
-P8 run only when `docs = "full"`, which is the default; the other rules
-always run. [The trueup reference](trueup.md) gives the full findings
+P8 run only when the docs mode is `full`. The default, `docs = "auto"`,
+gives `full` at tiers T2 and T3 and `readme` at T0 and T1. The other
+rules always run. [The trueup reference](trueup.md) gives the full findings
 table; this is the short list of which rule is which.
 
 | Rule | What it checks | trueup's version |
 |---|---|---|
 | R8 | A contributing guide: a heading or a separate file. | Required from tier T2. A `README.md` `## Contributing` heading satisfies it, or `CONTRIBUTING.md` (root, `.github/` or `docs/`). |
 | R10 | `README.md` over 200 lines gets a warning. | Unchanged: a warning, naming the split, once `README.md` passes 200 lines. |
-| C1 | A public repository has `SECURITY.md`. | Required from tier T2, only when `trueup.toml` sets `public = true`. |
+| C1 | A public repository has `SECURITY.md`. | Required at every tier, only when `trueup.toml` sets `public = true`. |
 | C2 | A public repository has an issue template. | Required from tier T2, only when `public = true`; a pull-request template is required alongside it. |
 | C4 | `AGENTS.md` exists and links to the index. | Check-only, from tier T1: a warning when `AGENTS.md` is missing, and a warning when `CLAUDE.md` exists but neither symlinks to `AGENTS.md` nor names it with `@AGENTS.md`. trueup does not check the link to the index, and never writes either file. |
 | C6 | `CHANGELOG.md`'s shape: `Unreleased`, descending versions, closed type headings. | Unchanged, checked when `CHANGELOG.md` is present and `docs = "full"`. |

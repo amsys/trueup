@@ -53,10 +53,11 @@ done:
 ```sh
 python3 trueup check --root .
 python3 trueup lint --root .
+python3 trueup refs --root .
 pytest tests/test_cli.py
 ```
 
 `check` must end with "The plan is empty". `lint` needs `ruff` and `vale`
 on the path. Run the test files of the modules that you changed; the full
-suite (`pytest -q`) takes about 15 minutes and also runs in CI on each
+suite (`pytest -q`) takes about 3 minutes and also runs in CI on each
 push. Read the output of each command. An exit code alone is not proof.
