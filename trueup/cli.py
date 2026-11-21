@@ -148,7 +148,7 @@ def _build_parser() -> argparse.ArgumentParser:
     check_parser.add_argument(
         "--changed",
         action="store_true",
-        help="scope the plan to this session's own changed files (arch: D6.17)",
+        help="scope the plan to the files that differ from HEAD and the untracked files (arch: D6.17)",
     )
     check_parser.add_argument(
         "--baseline",

@@ -97,7 +97,7 @@ _LEGACY_DIR = "lint/"
 
 _LEGACY_ACTION = (
     "trueup no longer manages this file; remove it when you have moved to "
-    "trueup lint (see the reference page)"
+    "trueup lint (see the how-to page Upgrade trueup)"
 )
 """The action text of the `managed-legacy` row (D14.8)."""
 
@@ -1150,10 +1150,10 @@ def _tool_findings(
                 category="setup",
                 severity="info",
                 path="",
-                evidence="trueup is not on the path, and the ref-check hook needs it",
+                evidence="trueup is not on the path, and the trueup lint hook needs it",
                 action=(
-                    "install trueup once on this machine, so that the ref-check "
-                    f"hook can run trueup refs: uv tool install --editable {PLUGIN_ROOT} "
+                    "install trueup once on this machine, so that the trueup lint hook "
+                    f"and trueup refs can run: uv tool install --editable {PLUGIN_ROOT} "
                     f"(or pipx install {PLUGIN_ROOT})"
                 ),
                 auto=False,
@@ -1272,7 +1272,7 @@ def _per_file_setup_findings(survey: Survey, cfg: Config | None) -> list[Finding
                 path=STALE_COPY_PATH,
                 evidence=(
                     f"{STALE_COPY_PATH} exists; in global mode nothing runs it "
-                    "(the ref-check hook runs trueup refs)"
+                    "(trueup lint runs the bundled checker)"
                 ),
                 action=f"delete it when it is trueup's old copy: git rm {STALE_COPY_PATH}",
                 auto=False,

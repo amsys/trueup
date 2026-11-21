@@ -463,8 +463,8 @@ invariant.
   `::test_load_reads_refs_mode_path_and_layout`,
   `::test_load_rejects_a_bad_refs_mode_or_layout_or_a_path_without_copy_mode`,
   `::test_render_writes_refs_mode_and_layout_and_round_trips`,
-  `test_managed.py::test_global_mode_renders_no_checker_copy_and_the_refs_hook`,
-  `::test_copy_mode_renders_the_copy_with_the_header_and_the_python_hook`,
+  `test_managed.py::test_global_mode_renders_no_checker_copy_and_the_lint_hook`,
+  `::test_copy_mode_renders_the_copy_with_the_header`,
   `::test_global_mode_reports_an_old_copy_as_info`,
   `::test_global_mode_names_trueup_when_it_is_not_on_the_path`,
   `::test_ci_names_the_trueup_install_in_one_placeholder_comment`,
@@ -487,7 +487,7 @@ invariant.
   and keeps the header is an automatic error, one with no header a
   manual warn; every rendered text file, the copy included, opens with
   the header
-  (`test_managed.py::test_copy_mode_renders_the_copy_with_the_header_and_the_python_hook`,
+  (`test_managed.py::test_copy_mode_renders_the_copy_with_the_header`,
   `::test_an_older_trueup_copy_with_the_header_is_an_automatic_error`,
   `::test_every_rendered_file_starts_with_the_header`).
 - D9.4: `layout = false` reads, renders and round-trips, and the
@@ -864,7 +864,7 @@ test. S25 and S26 are the acceptance tests of D12.1 and D12.9.
   page under `docs/`; an old file with the header on the first line
   after its front matter gives a `managed-legacy` row, and a rules file
   that a person wrote gives no row
-  (`test_managed.py::test_agent_rules_file_is_in_the_t2_set_with_front_matter_and_header`,
+  (`test_managed.py::test_no_agent_rules_file_is_in_the_t2_set_and_an_old_one_is_legacy`,
   `::test_agent_rules_file_needs_t2_without_a_docs_page`,
   `::test_agent_rules_file_header_is_the_first_line_after_front_matter`,
   `::test_agent_rules_file_that_is_not_trueups_stays_out_of_the_set`).

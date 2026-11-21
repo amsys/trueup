@@ -5,8 +5,8 @@ full `collect`, then writes `.trueup-baseline.json`: the plan's finding
 counts by `key` and the clean-mode ratchet values of `ratchet_values`. It
 is the only code path that writes this file (I-16). `trueup check
 --baseline` never writes; it loads the file with `load` and calls
-`compare`, whose `Gate` says whether a new finding, a score rise or a
-ratchet drop should fail the run.
+`compare`, whose `Gate` says whether a new finding, a ratchet drop or a
+missing report should fail the run. A score rise alone does not (D15.21).
 """
 
 from __future__ import annotations

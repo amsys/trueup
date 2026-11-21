@@ -1048,7 +1048,7 @@ def test_a_hand_edit_of_the_managed_ref_check_toml_is_drift(tmp_path: Path) -> N
     assert drift.auto is True
 
 
-def test_global_mode_renders_no_checker_copy_and_the_refs_hook(tmp_path: Path) -> None:
+def test_global_mode_renders_no_checker_copy_and_the_lint_hook(tmp_path: Path) -> None:
     """In global mode, the default, `render` has no checker pair, and the pre-commit snippet runs `trueup lint` only (D9.1, D14.9).
 
     arch: D9.1, D14.8, D14.9
@@ -1061,7 +1061,7 @@ def test_global_mode_renders_no_checker_copy_and_the_refs_hook(tmp_path: Path) -
     assert "ref_check" not in text
 
 
-def test_copy_mode_renders_the_copy_with_the_header_and_the_python_hook(
+def test_copy_mode_renders_the_copy_with_the_header(
     tmp_path: Path,
 ) -> None:
     """In copy mode `render` writes the bundled checker, whose first line is the managed header (D9.1, D9.3).
@@ -1441,7 +1441,7 @@ _OLD_RULES_FILE = (
 """The agent rules file as an earlier trueup wrote it: front matter, then the header on line 5."""
 
 
-def test_agent_rules_file_is_in_the_t2_set_with_front_matter_and_header(
+def test_no_agent_rules_file_is_in_the_t2_set_and_an_old_one_is_legacy(
     tmp_path: Path,
 ) -> None:
     """At T2 the set holds no `.claude/rules/trueup.md`; an old one with the header after its front matter is a `managed-legacy` row (D14.8, D14.10).
@@ -1642,7 +1642,7 @@ def test_managed_legacy_is_info_for_each_file_an_earlier_trueup_wrote(
         assert (row.category, row.severity, row.auto) == ("setup", "info", False)
         assert row.action == (
             "trueup no longer manages this file; remove it when you have "
-            "moved to trueup lint (see the reference page)"
+            "moved to trueup lint (see the how-to page Upgrade trueup)"
         )
     assert not [finding for finding in findings if finding.rule == "file-managed"]
     plan = build_plan(findings, {})

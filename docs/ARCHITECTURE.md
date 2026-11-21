@@ -57,18 +57,18 @@ older sections in round order.
 
 | Subject | Sections |
 |---|---|
-| Checker (`ref_check.py`) | D1.1 to D1.7, D2.1 to D2.14, D4.1, D4.2, D8.1, D8.4, D8.7, D9.1 to D9.4 |
-| Config (`trueup.toml`) | D14.1 to D14.4, D15.29, D5.3, D8.7, D9.1, D9.4, D12.9, D13.1, D13.2, D13.5, D16.13 |
-| Survey and tiers | D5.4, D6.14, D12.9, D12.10 |
-| Findings: hygiene rows | D5.4, D6.12, D7.2, D10.3 to D10.5, D12.11, D13.2 |
-| Findings: docs rows | D5.4, D6.5, D6.9, D6.15 |
-| Page locator and move plan | D10.1, D10.2, D10.6, D10.7, D10.12, D12.11, D13.1 |
-| Managed files and rule sets | D14.6 to D14.9, D15.28, D5.5, D5.6, D6.8, D6.13, D7.4, D7.5, D8.3, D9.5, D9.6, D12.7 to D12.9, D13.5, D13.6 |
+| Checker (`ref_check.py`) | D16.1 to D16.4, D15.18, D15.19, D15.23, D1.1 to D1.7, D2.1 to D2.14, D4.1, D4.2, D8.1, D8.4, D8.7, D9.1 to D9.4 |
+| Config (`trueup.toml`) | D14.1 to D14.4, D15.6, D15.29, D16.2, D16.13, D5.3, D8.7, D9.1, D9.4, D12.9, D13.1, D13.2, D13.5 |
+| Survey and tiers | D15.26, D5.4, D6.14, D12.9, D12.10 |
+| Findings: hygiene rows | D15.9 to D15.12, D15.14, D15.15, D15.17, D16.6, D5.4, D6.12, D7.2, D10.3 to D10.5, D12.11, D13.2 |
+| Findings: docs rows | D15.16, D15.30, D5.4, D6.5, D6.9, D6.15 |
+| Page locator and move plan | D15.13, D15.25, D10.1, D10.2, D10.6, D10.7, D10.12, D12.11, D13.1 |
+| Managed files and rule sets | D14.6 to D14.9, D15.4, D15.5, D15.28, D16.7, D5.5, D5.6, D6.8, D6.13, D7.4, D7.5, D8.3, D9.5, D9.6, D12.7 to D12.9, D13.5, D13.6 |
 | Apply, saved plan, approval | D15.27, D14.19, D5.6, D12.1 to D12.3, D12.6 |
-| Report, score, SARIF | D5.7, D6.12, D10.8, D12.4 |
+| Report, score, SARIF | D15.1, D15.3, D15.21, D5.7, D6.12, D10.8, D12.4 |
 | Hooks | D14.10, D14.11, D15.7, D15.24, D15.31 to D15.35, D5.8, D6.2 to D6.4, D7.7, D7.8, D13.4 |
-| Security | D6.10, D7.1 to D7.12, D14.12, D14.22 |
-| Baseline and changed-file scope | D6.6, D6.7, D6.17, D14.14, D14.21 |
+| Security | D15.20, D15.22, D16.5, D16.10, D6.10, D7.1 to D7.12, D14.12, D14.22 |
+| Baseline and changed-file scope | D15.8, D15.21, D6.6, D6.7, D6.17, D14.14, D14.21 |
 | Process: local targets | D6.16, D13.3, D14.15, D14.22 |
 | Config layers and profiles | D14.1 to D14.4, D14.18, D14.19, D14.23 |
 | Checker config, `trueup lint`, templates, managed set | D14.5 to D14.10, D14.20 |
