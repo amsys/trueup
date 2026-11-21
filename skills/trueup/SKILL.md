@@ -494,7 +494,7 @@ from `trueup template <name>` (see
    to the place that the person picks. The file is then the target's
    own, and no `check` row compares it with the template.
 5. For the `managed-legacy` rows, follow
-   [moving from the managed lint tree](../../docs/reference/trueup.md#moving-from-the-managed-lint-tree):
+   [moving from the managed lint tree](../../docs/how-to/upgrade-trueup.md#moving-from-the-managed-lint-tree):
    put the pre-commit entry in place of the old local hooks, run
    `trueup lint`, then ask whether to remove the old files. Remove a file
    with `git rm` only when the person approves that path. Keep the eslint
@@ -668,6 +668,14 @@ values and its effect are in
   a profile.
 - `[refs] local_tags`: the project's own comment-tag prefixes, for
   example `[refs] local_tags = ["X", "G", "P"]`, uppercase letters only.
+- `[refs] law_archive`: the law archive of the `law:` references, a path
+  relative to `ROOT` or absolute, for example
+  `[refs] law_archive = "../laws/archive"`. This key is the one way to
+  set a law archive. trueup renders it into the checker config as
+  `[targets.law] archive`, at every tier. Offer it when the `refcheck`
+  rows give `no-target` lines `target law is not configured`. The
+  archive shape is in
+  [Law references](../../docs/reference/trueup.md#law-references).
 - `[refs] declared` and `[refs] id_forms`: the design pages and the id
   forms of the checker. Offer them when the `refcheck` rows give many
   `unknown-id` lines for ids that a page of the project declares, but
@@ -744,11 +752,12 @@ config from `trueup.toml` at each run, so it does not have this gap.
   copy's `file-managed` id when the report holds one. Until then the copy
   still fails on a kept line and still reads an ignored path, while
   `check` passes.
-- Never edit `ref_check.toml` by hand, also not its `[scan] ignore` or
-  `[registry]` table: the file is managed, the edit is a `file-managed`
-  drift finding, and the next `apply` drops it.
+- Never edit `ref_check.toml` by hand, also not its `[scan] ignore`,
+  `[registry]` or `[targets.law]` table: the file is managed, the edit is
+  a `file-managed` drift finding, and the next `apply` drops it. To set a
+  law archive, set `[refs] law_archive` in `trueup.toml`.
 - To move a target from a copy to global mode, follow
-  [the upgrade notes](../../docs/reference/trueup.md#upgrade-notes).
+  [the upgrade notes](../../docs/how-to/upgrade-trueup.md#upgrade-notes).
 
 ### Adopt an existing JS or TS codebase
 

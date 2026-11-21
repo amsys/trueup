@@ -12,6 +12,7 @@ from trueup.rulesets import RULESETS
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _SKILL = _REPO_ROOT / "skills" / "trueup" / "SKILL.md"
 _REFERENCE = _REPO_ROOT / "docs" / "reference" / "trueup.md"
+_UPGRADE = _REPO_ROOT / "docs" / "how-to" / "upgrade-trueup.md"
 
 _FENCE = re.compile(r"^ *(```|~~~)")
 _SPAN = re.compile(r"`([^`]+)`")
@@ -20,7 +21,8 @@ _ARRAY_TABLE = re.compile(r"\[\[([a-z_][a-z0-9_.]*)\]\]")
 _TABLE_KEY = re.compile(r"(?<!\[)\[([a-z_][a-z0-9_]*)\] ([a-z_][a-z0-9_]*)\b")
 _BARE_KEY = re.compile(r"^([a-z_][a-z0-9_.]*) = ")
 _TABLE_LINE = re.compile(r"^\[\[?([a-z_][a-z0-9_.]*)\]\]?$")
-_REFERENCE_ANCHOR = re.compile(r"trueup\.md#([A-Za-z0-9_-]+)")
+_REFERENCE_ANCHOR = re.compile(r"reference/trueup\.md#([A-Za-z0-9_-]+)")
+_UPGRADE_ANCHOR = re.compile(r"upgrade-trueup\.md#([A-Za-z0-9_-]+)")
 _LOCAL_ANCHOR = re.compile(r"\]\(#([A-Za-z0-9_-]+)\)")
 
 _LAUNCHERS = ("trueup", "PLUGIN/trueup")
@@ -387,7 +389,10 @@ def test_skill_names_the_required_keys() -> None:
 
 
 def test_skill_anchors_resolve() -> None:
-    """Each `trueup.md#anchor` resolves in the reference page, and each `#anchor` in the skill.
+    """Each `trueup.md#anchor` resolves in its page, and each `#anchor` in the skill.
+
+    A `reference/trueup.md#anchor` resolves in the reference page, and an
+    `upgrade-trueup.md#anchor` in the upgrade page.
 
     arch: D15.36
     """
@@ -396,6 +401,10 @@ def test_skill_anchors_resolve() -> None:
     anchors = _REFERENCE_ANCHOR.findall(text)
     assert len(anchors) > 20, f"the scan found only {len(anchors)} anchors"
     assert sorted({a for a in anchors if a not in reference_slugs}) == []
+    upgrade_slugs = ref_check._heading_slugs(_UPGRADE.read_text(encoding="utf-8"))
+    upgrade_anchors = _UPGRADE_ANCHOR.findall(text)
+    assert len(upgrade_anchors) >= 2, upgrade_anchors
+    assert sorted({a for a in upgrade_anchors if a not in upgrade_slugs}) == []
     own_slugs = ref_check._heading_slugs(text)
     assert sorted({a for a in _LOCAL_ANCHOR.findall(text) if a not in own_slugs}) == []
 

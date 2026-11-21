@@ -7,6 +7,8 @@ reads it at the start of a session. The rules are the same for a person;
 ## Find your way
 
 - Start at the index of the documents, [docs/README.md](docs/README.md).
+- [How trueup works](docs/explanation/how-trueup-works.md) maps the code
+  by subject: read it before you change a module.
 - [The trueup reference](docs/reference/trueup.md) lists every command,
   flag, exit code, configuration key and finding.
 - [The architecture](docs/ARCHITECTURE.md) is the design record. The

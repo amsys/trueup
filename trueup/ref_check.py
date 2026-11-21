@@ -607,7 +607,7 @@ def resolve_arch(
 
 
 def resolve_law(root: Path, archive: Path, ident: str) -> Resolution:
-    r"""Resolve one section key against a lawsmu archive (D2.7).
+    r"""Resolve one section key against a law archive (D2.7).
 
     The pinned file is `<archive>/<law-key>/document.md`, where `<law-key>`
     is the id with its trailing `s.<section>` removed. A section heading is

@@ -123,8 +123,9 @@ def test_house_profile_writes_every_key_at_its_default() -> None:
 
     The keys that the file cannot hold are the target-only keys, `profile`,
     `[root] base` (absent by default), `[refs] path` (copy mode only),
-    `[refs] layout` (it cannot stand beside the `[layout]` switches) and
-    `[[eslint.off]]` (no entry by default).
+    `[refs] layout` (it cannot stand beside the `[layout]` switches),
+    `[refs] law_archive` (absent by default, D16.13) and `[[eslint.off]]`
+    (no entry by default).
 
     arch: D14.1, D14.3, D14.15
     """
@@ -143,6 +144,7 @@ def test_house_profile_writes_every_key_at_its_default() -> None:
         "refs.declared",
         "refs.id_forms",
         "refs.accepted_reader_changes",
+        "refs.law_archive",
         "eslint.off",
     }
     wanted = (set(config._MERGE_FIELDS) | {"languages"}) - left_out

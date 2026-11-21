@@ -883,6 +883,71 @@ def test_render_ref_check_config_carries_the_accepted_reader_changes(
     assert tomllib.loads(text)["targets"]["arch"] == {"accepted": ["rust-doc-position"]}
 
 
+def test_render_ref_check_config_carries_the_law_archive(tmp_path: Path) -> None:
+    """`ref_check.toml` gets `[targets.law] archive` from `[refs] law_archive`, and no table without it.
+
+    The table sits after `[targets.arch]` and before `[keep]`, and the
+    text with no key is the text of before. The checker reads the
+    rendered table with its own loader.
+
+    arch: D16.13
+    """
+    t2 = _survey(tmp_path, tier="T2")
+    plain_cfg = _python_cfg(
+        refs_declared=("docs/*.md",),
+        keep={"refcheck:docs/a.md:1:no-front-matter": "a reason"},
+        ignore=("build/**",),
+    )
+    plain = managed.render_ref_check_config(plain_cfg, t2, keep=True)
+    assert "[targets.law]" not in plain
+    keyed = managed.render_ref_check_config(
+        replace(plain_cfg, refs_law_archive="../laws/archive"), t2, keep=True
+    )
+    table = '\n[targets.law]\narchive = "../laws/archive"\n'
+    assert keyed.count(table) == 1
+    assert keyed.replace(table, "", 1) == plain
+    assert keyed.index("[targets.arch]") < keyed.index("[targets.law]")
+    assert keyed.index("[targets.law]") < keyed.index("[keep]")
+    assert tomllib.loads(keyed)["targets"]["law"] == {"archive": "../laws/archive"}
+    (tmp_path / "ref_check.toml").write_text(keyed, encoding="utf-8")
+    loaded = ref_check.load_config(tmp_path)
+    assert loaded.archive == (tmp_path / ".." / "laws" / "archive").resolve()
+    # A quote, a backslash and a letter outside ASCII round-trip.
+    odd = 'C:\\laws "x"/ärchive'
+    text = managed.render_ref_check_config(_python_cfg(refs_law_archive=odd), t2)
+    assert tomllib.loads(text)["targets"]["law"] == {"archive": odd}
+
+
+def test_a_law_archive_is_rendered_below_the_tier_gate(tmp_path: Path) -> None:
+    """Below the gate a set `law_archive` keeps its table, each switch stays off, and copy mode keeps the file at T0.
+
+    arch: D16.13
+    """
+    other = ("src/a.py",)
+    plain = Config()
+    cfg = Config(refs_law_archive="/srv/laws/archive")
+    for survey in (
+        _survey(tmp_path, tier="T0"),
+        _with_files(_survey(tmp_path, tier="T1"), other),
+    ):
+        assert not managed.refcheck_switches_on(plain, survey)
+        assert managed.refcheck_switches_on(cfg, survey)
+        for text in (
+            managed.render_ref_check_config(cfg, survey),
+            docrules._refcheck_config_text(cfg, survey),
+            lint._ref_check_text(cfg, survey),
+        ):
+            assert not any(_switches(text).values())
+            assert tomllib.loads(text)["targets"] == {
+                "law": {"archive": "/srv/laws/archive"}
+            }
+    t0 = _survey(tmp_path, tier="T0")
+    copy = Config(refs_mode="copy")
+    assert managed.REF_CHECK_CONFIG_PATH not in managed.render(copy, t0)
+    keyed = replace(copy, refs_law_archive="../laws/archive")
+    assert managed.REF_CHECK_CONFIG_PATH in managed.render(keyed, t0)
+
+
 @pytest.mark.parametrize(
     "keys",
     [

@@ -226,6 +226,10 @@ class Config:
             unregistered marker. `apply` renders them into the managed
             `ref_check.toml` as `[registry] local_tags` (D8.7). Empty by
             default.
+        refs_law_archive: The law archive directory, relative to the root
+            or absolute, or `None`. `render_ref_check_config` writes it as
+            `[targets.law] archive` (D16.13). `None` by default: no `law`
+            reference resolves.
         refs_declared: The pages or globs, relative to the root, that declare
             the design ids (D16.2). `render_ref_check_config` writes them as
             `[targets.arch] sources`. Empty by default.
@@ -295,6 +299,7 @@ class Config:
     refs_mode: str = "global"
     refs_path: str = _DEFAULT_REFS_PATH
     refs_local_tags: tuple[str, ...] = ()
+    refs_law_archive: str | None = None
     refs_layout: bool = True
     languages: dict[str, str] = field(default_factory=dict)
     eslint_off: dict[str, str] = field(default_factory=dict)
@@ -388,6 +393,7 @@ _MERGE_FIELDS: dict[str, tuple[str, ...]] = {
     "refs.mode": ("refs_mode",),
     "refs.path": ("refs_path",),
     "refs.local_tags": ("refs_local_tags",),
+    "refs.law_archive": ("refs_law_archive",),
     "refs.declared": ("refs_declared",),
     "refs.id_forms": ("refs_id_forms",),
     "refs.accepted_reader_changes": ("refs_accepted_reader_changes",),
@@ -1052,6 +1058,7 @@ def _parse_values(raw: dict[str, Any], source: Path | None, layer: str) -> Confi
             "mode",
             "path",
             "local_tags",
+            "law_archive",
             "layout",
             "registry",
             "comments",
@@ -1094,6 +1101,14 @@ def _parse_values(raw: dict[str, Any], source: Path | None, layer: str) -> Confi
         raise ConfigError(
             "trueup.toml: refs.local_tags must be a list of uppercase prefixes, "
             'for example ["X", "G"]'
+        )
+    refs_law_archive = refs_table.get("law_archive")
+    if refs_law_archive is not None and (
+        not isinstance(refs_law_archive, str) or not refs_law_archive.strip()
+    ):
+        raise ConfigError(
+            "trueup.toml: refs.law_archive must be a non-empty string, the path "
+            "of the law archive relative to the root or absolute (D16.13)"
         )
     refs_declared = _string_list(refs_table, "declared", context="refs.declared")
     if not all(entry and not os.path.isabs(entry) for entry in refs_declared):
@@ -1146,6 +1161,7 @@ def _parse_values(raw: dict[str, Any], source: Path | None, layer: str) -> Confi
         refs_mode=refs_mode,
         refs_path=refs_path,
         refs_local_tags=refs_local_tags,
+        refs_law_archive=refs_law_archive,
         refs_declared=refs_declared,
         refs_id_forms=refs_id_forms,
         refs_accepted_reader_changes=refs_accepted,
@@ -1881,7 +1897,7 @@ def _layout_lines(cfg: Config, default: Config) -> list[str]:
 
 
 def _refs_lines(cfg: Config, default: Config) -> list[str]:
-    """Give the `[refs]` key lines that `render` writes (D8.7, D9.1, D9.4, D14.2).
+    """Give the `[refs]` key lines that `render` writes (D8.7, D9.1, D9.4, D14.2, D16.13).
 
     Args:
         cfg: The configuration that `render` writes.
@@ -1912,6 +1928,13 @@ def _refs_lines(cfg: Config, default: Config) -> list[str]:
                 "refs.local_tags",
                 bool(cfg.refs_local_tags),
                 f"local_tags = {_toml_list(cfg.refs_local_tags)}                   # the project's own tag prefixes (D8.7)",
+            ),
+            (
+                "refs.law_archive",
+                cfg.refs_law_archive is not None,
+                None
+                if cfg.refs_law_archive is None
+                else f"law_archive = {_toml_string(cfg.refs_law_archive)}                   # the law archive, relative to the root or absolute (D16.13)",
             ),
             (
                 "refs.declared",
@@ -1959,6 +1982,18 @@ def _toml_bool(value: bool) -> str:
         `"true"` or `"false"`.
     """
     return "true" if value else "false"
+
+
+def toml_string(value: str) -> str:
+    """Render a string as a TOML basic string, for another module's TOML file (D16.13).
+
+    Args:
+        value: The string.
+
+    Returns:
+        `_toml_string(value)`.
+    """
+    return _toml_string(value)
 
 
 def toml_list(values: tuple[str, ...]) -> str:

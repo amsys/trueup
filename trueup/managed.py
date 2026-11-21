@@ -175,22 +175,36 @@ _TIER_RANK: dict[str, int] = {"T0": 0, "T1": 1, "T2": 2, "T3": 3}
 
 
 def refcheck_switches_on(cfg: Config, survey: Survey) -> bool:
-    """Say whether the checker gets its rendered config (D14.5, D16.2).
+    """Say whether the checker gets its rendered config (D14.5, D16.2, D16.13).
 
     The callers `check`, `lint` and `refs` give an empty config when this
     is false. A set reader key needs the rendered `[targets.arch]` table
-    at each tier, so it makes this true. The `[checks]` switches follow
-    `_tier_switches_on` only.
+    at each tier, and a set `[refs] law_archive` needs the rendered
+    `[targets.law]` table at each tier, so each makes this true. The
+    `[checks]` switches follow `_tier_switches_on` only.
 
     Args:
         cfg: The config of the target.
         survey: The survey of the target.
 
     Returns:
-        True when `[refs] declared` or `id_forms` is set, or when
-        `_tier_switches_on` is true. Else False.
+        True when `[refs] declared`, `id_forms` or `law_archive` is set,
+        or when `_tier_switches_on` is true. Else False.
     """
-    return _reader_is_configured(cfg) or _tier_switches_on(cfg, survey)
+    return _target_is_configured(cfg) or _tier_switches_on(cfg, survey)
+
+
+def _target_is_configured(cfg: Config) -> bool:
+    """Say whether a key that the checker needs at each tier is set (D16.2, D16.13).
+
+    Args:
+        cfg: The config of the target.
+
+    Returns:
+        True when `_reader_is_configured` is true or `refs_law_archive`
+        is set.
+    """
+    return _reader_is_configured(cfg) or cfg.refs_law_archive is not None
 
 
 def _reader_is_configured(cfg: Config) -> bool:
@@ -241,14 +255,14 @@ def _min_tier(path: str, cfg: Config, survey: Survey) -> str:
 
     Returns:
         `"T0"` for the copy-mode checker; for `ref_check.toml`, `"T0"`
-        when a reader key is set, so the file comes with the checker
-        (D16.2), `"T1"` when `refcheck_switches_on` is true, else `"T2"`,
+        when a reader key or the law archive is set, so the file comes
+        with the checker (D16.2, D16.13), `"T1"` when `refcheck_switches_on` is true, else `"T2"`,
         so the file comes at the same tier as its switches; `"T1"` for
         `trueup.toml`.
     """
     if cfg.refs_mode == "copy" and path == cfg.refs_path:
         return "T0"
-    if path == REF_CHECK_CONFIG_PATH and _reader_is_configured(cfg):
+    if path == REF_CHECK_CONFIG_PATH and _target_is_configured(cfg):
         return "T0"
     if path == REF_CHECK_CONFIG_PATH and not refcheck_switches_on(cfg, survey):
         return "T2"
@@ -405,6 +419,8 @@ def render_ref_check_config(cfg: Config, survey: Survey, keep: bool = True) -> s
         default, a `[registry]` table when `refs_local_tags` is not empty,
         a `[targets.arch]` table when `refs_declared`, `refs_id_forms` or
         `refs_accepted_reader_changes` is set (D16.2, D16.3),
+        a `[targets.law]` table with `archive` when `refs_law_archive` is
+        set (D16.13),
         a `[keep]` table when `keep` is true and a `refcheck:` id is kept,
         and a `[scan]` table when `ignore` is not empty.
     """
@@ -449,6 +465,10 @@ def render_ref_check_config(cfg: Config, survey: Survey, keep: bool = True) -> s
         if cfg.refs_accepted_reader_changes:
             accepted = config_mod.toml_list(cfg.refs_accepted_reader_changes)
             lines.append(f"accepted = {accepted}")
+    if cfg.refs_law_archive is not None:
+        lines.append("")
+        lines.append("[targets.law]")
+        lines.append(f"archive = {config_mod.toml_string(cfg.refs_law_archive)}")
     if keep:
         kept = kept_failure_ids(cfg)
         if kept:

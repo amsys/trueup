@@ -9,6 +9,18 @@ numbers follow [PEP 440](https://peps.python.org/pep-0440/).
 ### Added
 
 - A tutorial, "Your first run": five minutes on a practice repository.
+- `[refs] law_archive` in `trueup.toml`: the path of a law archive.
+  trueup renders it into the checker config as `[targets.law] archive`,
+  at every tier. Before, only a hand-written `ref_check.toml` could set
+  a law archive, and trueup reported that file as drift.
+
+### Changed
+
+- The claims of the design, the section `## Verification`, moved from
+  `docs/ARCHITECTURE.md` to `docs/reference/design-verification.md`.
+  `[refs] declared` in `trueup.toml` names both pages, so check c reads
+  the claims on the new page. A test fails when no page that check c
+  reads holds the claims.
 
 ## [0.1.0a1] - 2026-11-16
 

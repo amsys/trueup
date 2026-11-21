@@ -385,6 +385,78 @@ def test_refs_local_tag_shape_equals_the_checkers() -> None:
     assert config_mod._LOCAL_TAG.flags == ref_check._LOCAL_TAG.flags
 
 
+def test_refs_law_archive_parses_merges_and_round_trips(tmp_path: Path) -> None:
+    """`[refs] law_archive` loads, merges over a profile, and `render` writes it only when set.
+
+    arch: D16.13
+    """
+    assert Config().refs_law_archive is None
+    assert "refs.law_archive" in config_mod.KEYS
+    assert "law_archive" not in render(Config())
+    cfg = Config(refs_law_archive="../laws/archive")
+    text = render(cfg)
+    assert '[refs]\nlaw_archive = "../laws/archive"' in text
+    (tmp_path / "trueup.toml").write_text(text, encoding="utf-8")
+    assert load(tmp_path) == cfg
+    absolute = Config(refs_law_archive=str(tmp_path / "archive"))
+    (tmp_path / "trueup.toml").write_text(render(absolute), encoding="utf-8")
+    assert load(tmp_path) == absolute
+    # The profile gives the key; the target file sets it again and wins.
+    profiles = config_mod.config_home() / "profiles"
+    profiles.mkdir(parents=True, exist_ok=True)
+    (profiles / "mine.toml").write_text(
+        '[refs]\nlaw_archive = "../profile/archive"\n', encoding="utf-8"
+    )
+    (tmp_path / "trueup.toml").write_text(
+        'version = 1\nprofile = "mine"\n', encoding="utf-8"
+    )
+    assert load(tmp_path).refs_law_archive == "../profile/archive"
+    target = load_target(tmp_path)
+    assert target is not None
+    assert target.refs_law_archive is None
+    assert "law_archive" not in render(target)
+    (tmp_path / "trueup.toml").write_text(
+        'version = 1\nprofile = "mine"\n[refs]\nlaw_archive = "../laws/archive"\n',
+        encoding="utf-8",
+    )
+    assert load(tmp_path).refs_law_archive == "../laws/archive"
+
+
+@pytest.mark.parametrize("value", ['""', '"   "', "1", '["../laws/archive"]', "true"])
+def test_refs_law_archive_rejects_a_bad_value(tmp_path: Path, value: str) -> None:
+    """A `law_archive` that is not a non-empty string is a config error that names the key.
+
+    arch: D16.13
+    """
+    (tmp_path / "trueup.toml").write_text(
+        f"version = 1\n[refs]\nlaw_archive = {value}\n", encoding="utf-8"
+    )
+    with pytest.raises(ConfigError, match=r"refs\.law_archive"):
+        load(tmp_path)
+
+
+def test_a_bad_refs_law_archive_exits_2_and_names_the_key(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """`trueup check` on a bad `law_archive` exits 2 with one line that names `refs.law_archive`.
+
+    arch: D16.13
+    """
+    import subprocess
+
+    from trueup import cli
+
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    (tmp_path / "README.md").write_text("# x\n", encoding="utf-8")
+    (tmp_path / "trueup.toml").write_text(
+        'version = 1\n[refs]\nlaw_archive = ""\n', encoding="utf-8"
+    )
+    assert cli.main(["check", "--root", str(tmp_path)]) == 2
+    err = capsys.readouterr().err
+    assert err.count("\n") == 1
+    assert "refs.law_archive" in err
+
+
 def test_refs_declared_and_id_forms_parse_merge_and_round_trip(tmp_path: Path) -> None:
     """`[refs] declared` and `id_forms` load, render and read back; the default sets neither (D16.2).
 

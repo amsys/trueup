@@ -35,15 +35,15 @@ Inside a Claude Code plugin, the skill runs it as
 | Command | Purpose | Exit code |
 |---|---|---|
 | `survey [--root DIR]` | Print a JSON inventory of the target: files, languages, tools on the path, the picked tier. When no file stays after the `ignore` globs, it prints the empty survey and exits 0. | 0, or 2 on a bad `trueup.toml` or on one of the [errors](#errors) |
-| `check [--root DIR] [--json] [--out DIR] [--sarif FILE]` | Print the findings report: Markdown by default, JSON with `--json`. `--out DIR` also writes `DIR/trueup-report.md` and `DIR/trueup-report.json`. `check` writes nothing else, and runs no code from the target: the `refcheck` row runs the bundled `ref_check.py`, never the target's copy, with the `ref_check.toml` that `apply` would write, less its `[keep]` table, passed through a file outside the target (D8.1, D9.2). Give it a `DIR` outside the target, or an ignored one, and the target stays byte-identical. The Markdown report lists every finding once, under `Plan`, `Kept` (a finding `[[keep]]` names, with its reason) or `Info`; the JSON report holds `plan`, `findings` (every finding) and `kept` (id and reason); its keys are in [JSON report](#json-report). After `Plan`, a `Move plan` section lists the proposed moves, and the JSON report holds them as `moves` (see [Move plan](#move-plan)). A move is not a finding. The JSON report also holds `tree`, the identity of the working tree (see [Saved plan](#saved-plan)), and `repins` (see [Re-pin plan](#re-pin-plan)). `--sarif FILE` also writes the findings as SARIF 2.1.0 (see [SARIF output](#sarif-output)). | 0 when the plan is empty, 1 when it holds a finding, 2 on a bad `trueup.toml`, on one of the [errors](#errors), or when `--out` or `--sarif` is inside the root and no `ignore` glob covers it |
-| `check --changed [--root DIR] [--json]` | Scope the plan to the changed files: the working tree against `HEAD`, plus untracked files, less ignored and deleted files (`trueup/changes.py` `working_set`). It reads no session snapshot, so a file that was already changed before the session also counts; the Stop hook (see [Hooks](#hooks)) uses the snapshot instead. Runs no `refcheck` row, and drops every repo-wide finding (`health`, `setup`, `root-budget`); the report carries no score, since a score is for the whole repository. A changed page outside `docs/` still gets its `doc-misplaced` finding, with the evidence `the move plan comes from a full check`: a scoped run makes no move plan and runs no git history scan, and its JSON report has no `moves` key. | 0 when the scoped plan is empty, 1 when it holds a finding, 2 when combined with `--baseline` or `--out` |
+| `check [--root DIR] [--json] [--out DIR] [--sarif FILE]` | Print the findings report: Markdown by default, JSON with `--json`. It runs no code from the target (see [trueup check](#trueup-check)). | 0 when the plan is empty, 1 when it holds a finding, 2 on a bad `trueup.toml`, on one of the [errors](#errors), or when `--out` or `--sarif` is inside the root and no `ignore` glob covers it |
+| `check --changed [--root DIR] [--json]` | Scope the plan to the changed files: the working tree against `HEAD`, plus untracked files, less ignored and deleted files (`trueup/changes.py` `working_set`). It runs no `refcheck` row and drops every repo-wide finding (see [trueup check](#trueup-check)). | 0 when the scoped plan is empty, 1 when it holds a finding, 2 when combined with `--baseline` or `--out` |
 | `check --baseline [--root DIR] [--json]` | Compare the plan against `.trueup-baseline.json` instead of judging it directly (see [Baseline](#baseline)). Reads the file; writes nothing (I-18, I-16). | 0 when nothing new; 1 when a finding key's count rose, a ratchet dropped, or a ratchet report the baseline recorded is now missing (the score is information only, D15.21); 2 when no baseline file exists, when the file is not a trueup baseline (see [Baseline](#baseline)), or on a bad `trueup.toml` |
-| `baseline [--root DIR]` | Run a full `check` and write `.trueup-baseline.json`: the plan's finding counts and the clean-mode ratchet values. Writes that one file and nothing else. Prints `baseline: <n> keys, score <s>`. | 0, or 2 on a bad `trueup.toml` |
-| `apply [--root DIR] (--ids ID[,ID...] \| --all-auto \| --from-report FILE) [--plan FILE] [--allow-dirty] [--mode LANG=MODE[,...]] [--set KEY=VALUE ...]` | Carry out the named ids, or every automatic finding. `--all-auto` repeats on the new plan, up to five passes, until a pass changes nothing. `--ids` also takes the `move:` ids of the move plan, the `repin:` ids of the re-pin plan and the setup id `setup:trueup.toml`; `--all-auto` takes none of them (see [Approval ids](#approval-ids)). `--plan FILE` acts on a saved `check --json` file, and `--from-report FILE` on the ticked boxes of a Markdown report (see [Saved plan](#saved-plan)). `apply` refuses to write a path with uncommitted changes unless `--allow-dirty` is given (see [Dirty tree](#dirty-tree)). Prints one line per action. | 0 on success, 1 when one handler, one `git mv` or one re-pin failed, or a write was refused because it resolves outside the root (the rest still ran; see [Writes stay in the root](#writes-stay-in-the-root)), 2 when an id is unknown, not in the current plan, or not automatic, when a `move:` or `repin:` id is not in its plan, when a `--mode` or `--set` value is bad, when the saved plan or the report is bad or its tree changed, when an automatic row of the saved plan does not hold on the tree now, when a touched path has uncommitted changes, or on a bad `trueup.toml` — with nothing written |
-| `lint [--root DIR] [--profile NAME] [--changed] [--install] [--skip-missing] [PATH ...]` | Run the linters of the rule sets in force on the target, with tool configs that it renders into a temporary directory at run time (see [trueup lint](#trueup-lint)). Writes nothing under the root (I-47). `--install` installs the eslint packages, jscpd and sqlfluff, and lints nothing. `--skip-missing` skips a tool that is not installed, with one line, in place of exit 2. | 0 when each tool ran and exited 0, 1 when one tool failed, 2 when a tool is not installed and `--skip-missing` is absent (also when another tool failed), on a bad `trueup.toml` or profile, on `PATH` together with `--changed`, when the target has no `trueup.toml` and no user default file exists, or on one of the [errors](#errors); with `--install`, the first exit code of the install commands that is not 0 |
+| `baseline [--root DIR]` | Run a full `check` and write `.trueup-baseline.json`: the plan's finding counts and the clean-mode ratchet values. Writes that one file and nothing else, and prints `baseline: <n> keys, score <s>`. | 0, or 2 on a bad `trueup.toml` |
+| `apply [--root DIR] (--ids ID[,ID...] \| --all-auto \| --from-report FILE) [--plan FILE] [--allow-dirty] [--mode LANG=MODE[,...]] [--set KEY=VALUE ...]` | Carry out the named ids, or every automatic finding (see [Approval ids](#approval-ids), [Saved plan](#saved-plan) and [Dirty tree](#dirty-tree)). Prints one line per action. | 0 on success, 1 when one handler, one `git mv` or one re-pin failed, or a write was refused because it resolves outside the root (the rest still ran; see [Writes stay in the root](#writes-stay-in-the-root)), 2 when an id is unknown, not in the current plan, or not automatic, when a `move:` or `repin:` id is not in its plan, when a `--mode` or `--set` value is bad, when the saved plan or the report is bad or its tree changed, when an automatic row of the saved plan does not hold on the tree now, when a touched path has uncommitted changes, or on a bad `trueup.toml` — with nothing written |
+| `lint [--root DIR] [--profile NAME] [--changed] [--install] [--skip-missing] [PATH ...]` | Run the linters of the rule sets in force on the target, with tool configs that it renders into a temporary directory at run time (see [trueup lint](#trueup-lint)). Writes nothing under the root (I-47). | 0 when each tool ran and exited 0, 1 when one tool failed, 2 when a tool is not installed and `--skip-missing` is absent (also when another tool failed), on a bad `trueup.toml` or profile, on `PATH` together with `--changed`, when the target has no `trueup.toml` and no user default file exists, or on one of the [errors](#errors); with `--install`, the first exit code of the install commands that is not 0 |
 | `template <name>` | Print one template to standard output: a file that trueup no longer manages, for the person to keep as their own (see [trueup template](#trueup-template)). Takes no `--root`. | 0, or 2 for no name or an unknown name |
 | `hook session\|guard\|stop\|interface` | Read one JSON object from standard input and run one Claude Code hook (see [Hooks](#hooks)). | 0 for any of the four events; argparse exits 2 before the handler runs for any other event name |
-| `refs [--root DIR] [--edges FILE] [--config FILE]` | Run the reference checker directly: every token after `refs` goes to `trueup.ref_check.main` unparsed, so its own `--help` prints the checker's usage line, not this command's. `--config FILE` reads `FILE` in place of `ROOT/ref_check.toml`. It reads the `[keep]` table of that file, so a kept `refcheck` finding is not printed, not counted and no reason for exit 1 (D9.2); in global mode the `ref-check` pre-commit hook runs this command (D9.1). The checker accepts the flags of `ref_check.REFS_FLAGS`: `--root --edges --config --help -h` (D15.36). | 0 no failure, 1 one failure or more, 2 a bad command line, a bad `ref_check.toml`, or an absent `--config` file |
+| `refs [--root DIR] [--edges FILE] [--config FILE]` | Run the reference checker directly (see [trueup refs](#trueup-refs)). `--config FILE` reads `FILE` in place of `ROOT/ref_check.toml`. | 0 no failure, 1 one failure or more, 2 a bad command line, a bad `ref_check.toml`, or an absent `--config` file |
 
 `--root` defaults to the git top level of the working directory; give it
 when the working directory is not inside the target's own git repository.
@@ -150,6 +150,24 @@ A file that a reader cannot parse because the parse runs out of memory
 is no error: the drift and baseline readers skip it, and the checker
 reports it as `unreadable`.
 
+### trueup check
+
+`--out DIR` also writes `DIR/trueup-report.md` and
+`DIR/trueup-report.json`. `check` writes nothing else, and runs no code
+from the target: the `refcheck` row runs the bundled `ref_check.py`,
+never the target's copy (D8.1, D9.2). Give it a `DIR` outside the
+target, or an ignored one, and the target stays byte-identical. The
+Markdown report lists every finding once, under `Plan`, `Kept` (a finding
+`[[keep]]` names, with its reason) or `Info`, and the JSON `findings` key
+holds every finding (see [JSON report](#json-report)).
+
+`check --changed` reads no session snapshot, so a file that was already
+changed before the session also counts; the Stop hook (see
+[Hooks](#hooks)) uses the snapshot instead. The repo-wide findings that
+it drops are `health`, `setup` and `root-budget`; the report carries no
+score, since a score is for the whole repository. It makes no move plan
+and runs no git history scan (see the `doc-misplaced` row).
+
 ### JSON report
 
 `check --json` prints schema 1 (D15.3). The full report has the keys
@@ -180,7 +198,8 @@ renders the `--changed` report.
 
 ### Approval ids
 
-`apply --ids` accepts four kinds of id (D12.3). `apply.approvable` gives
+`--all-auto` repeats on the new plan, up to five passes, until a pass
+changes nothing. `apply --ids` accepts four kinds of id (D12.3). `apply.approvable` gives
 this one list, and the Markdown report puts a box on exactly these ids:
 
 | Id | Source | `--all-auto` |
@@ -333,7 +352,7 @@ covers gives exit 2, as for `--out`.
   level of that rule.
 
 No CI step of the CI template uploads the file: CI cannot install
-trueup yet (see [Follow-ups](#follow-ups)).
+trueup yet (see [Follow-ups](../explanation/field-trial.md#follow-ups)).
 
 ### trueup lint
 
@@ -371,7 +390,8 @@ prints
 and exits 2. A missing tool and a failed tool in one run also give 2.
 The function is `lint.run(root, paths, *, changed, install, skip_missing=False)`.
 `--skip-missing` (`lint.run(..., skip_missing=True)`) gives the old
-behaviour: the skip lines, and the exit code of the tools that ran. The
+behaviour: one skip line for each tool that is not installed in place of
+exit 2, and the exit code of the tools that ran. The
 run does not run gitleaks: `check` runs it for the secret rows. With
 `--changed`, gitleaks scans only the changed files.
 
@@ -404,8 +424,8 @@ and counts as the missing tool `eslint packages`, and `check` gives the
 eslint config as `run-<pid>.mjs` in that directory and removes it at the
 end.
 
-`trueup lint --install` installs the tools that the config needs. Every
-install runs, and the exit code is the first one that is not 0:
+`trueup lint --install` installs the tools that the config needs, and
+lints nothing. Every install runs, and the exit code is the first one that is not 0:
 
 - the eslint packages, when TypeScript or Vue is on: it writes the
   package.json of the eslint package directory and runs
@@ -436,7 +456,7 @@ command prints the names and exits 2.
 
 | Name | Text | Usual place |
 |---|---|---|
-| `pre-commit` | One `repo: local` hook that runs `trueup lint` (see [Moving from the managed lint tree](#moving-from-the-managed-lint-tree)) | `.pre-commit-config.yaml` |
+| `pre-commit` | One `repo: local` hook that runs `trueup lint` (see [Moving from the managed lint tree](../how-to/upgrade-trueup.md#moving-from-the-managed-lint-tree)) | `.pre-commit-config.yaml` |
 | `editorconfig` | The editor settings that the rule sets assume | `.editorconfig` |
 | `ci` | A GitHub Actions workflow with pinned actions (I-32): a comment where the trueup install step goes, a gitleaks install, the step `pip install ruff==0.15.9 vale==3.26.0.1`, a comment that names the install of the other tools (`trueup lint --install` for jscpd, sqlfluff and the eslint packages) and `trueup lint --skip-missing` as the opt-out, `trueup check --root .`, `trueup lint --root .`, and the `osv-scanner` step | `.github/workflows/trueup.yml` |
 | `contributing` | A contributing guide | `CONTRIBUTING.md` |
@@ -448,6 +468,16 @@ command prints the names and exits 2.
 
 The action of each health row names its template, for example `write
 SECURITY.md; run trueup template security`.
+
+### trueup refs
+
+Every token after `refs` goes to `trueup.ref_check.main` unparsed, so its
+own `--help` prints the checker's usage line, not this command's. It
+reads the `[keep]` table of the config file, so a kept `refcheck` finding
+is not printed, not counted and no reason for exit 1 (D9.2); in global
+mode the `ref-check` pre-commit hook runs this command (D9.1). The
+checker accepts the flags of `ref_check.REFS_FLAGS`:
+`--root --edges --config --help -h` (D15.36).
 
 ## Profiles
 
@@ -616,7 +646,7 @@ the default; it never copies a value of a profile into the file (I-45).
 Since D14.8, a target in global mode holds no `ref_check.toml` and no
 eslint config of trueup. Where a row below says that `apply` renders a
 key into the managed `ref_check.toml` (`ignore`, `[refs] local_tags`,
-`[refs] layout`, `[[keep]]`), `check`, `trueup lint` and `trueup refs`
+`[refs] law_archive`, `[refs] layout`, `[[keep]]`), `check`, `trueup lint` and `trueup refs`
 render the key into the checker config of each run (D14.5); only in
 copy mode does the managed `ref_check.toml` hold it, with its
 `file-managed` row. Where a row says that `apply` renders a key into
@@ -667,6 +697,7 @@ beside them (D14.2).
 | `[health] agents` | `true`, `false`; default `true` | `false` turns off the `agents-missing` and `claude-not-linked` rows. |
 | `[health] files` | `tier`, `readme`; default `tier` | Which health files are required. `tier` uses the tier table (see [Tier and health](#tier-and-health)). `readme` requires `README.md` only: `health-readme` is the one health file row. The `minimal` profile sets `readme` (D15.14). Another value exits 2. |
 | `[refs] local_tags` | A list of uppercase prefixes, for example `["X", "G"]`; default empty | The project's own comment-tag prefixes (`// X1:`, `// G2:`). `apply` renders them into the managed `ref_check.toml` as `[registry] local_tags`, and `check` runs the checker with them from the first run, so the checker's rule R1 does not report them as `unregistered` (D8.7). A prefix followed by digits counts as the same tag. `apply` writes the key to `trueup.toml` when the file sets it, also as an empty list, and when it is not empty (D14.3). |
+| `[refs] law_archive` | A non-empty string: a path relative to the root, or absolute; default absent | The law archive of the `law` references (see [Law references](#law-references)). `apply` renders it into the managed `ref_check.toml` as `[targets.law] archive`, and `check`, `trueup lint` and `trueup refs` give it to the checker at every tier (D16.13). Absent, each `law` reference fails with `no-target`. Another value exits 2, and the message names `refs.law_archive`. `apply` writes the key to `trueup.toml` only when it is set. Do not write `[targets.law]` into `ref_check.toml` by hand: a hand edit is a `file-managed:ref_check.toml` finding, and the next `apply` removes it (D2.5). |
 | `[refs] layout` | `true`, `false`; default `true` | `false` turns check h of the checker off: `apply` renders `[checks] layout = false` into `ref_check.toml`, and `check` runs with it from the first run (D9.4). No page under `docs/` then gets a `no-front-matter`, `bad-field`, `misplaced`, `unindexed` or `duplicate-id` finding, also a page added later. For pages that keep fixed paths the project's own tools read, or a page a tool regenerates. One `[[keep]]` entry per page is the narrower choice: it keeps the rule for new pages. `apply` writes the key to `trueup.toml` when the file sets it, also at `true`, and when it is `false` (D14.3). A higher `[layout]` switch wins over a lower `[refs] layout`; checker check h and the typed docs target read only the `[layout]` switches (D15.29). |
 | `[languages]` | One key per language, value `strict`, `clean` or `off` | The mode of each of the eight languages: `python`, `rust`, `typescript`, `vue`, `shell`, `sql`, `go`, `php`. |
 | `[[eslint.off]]` | `rule`, `reason`; default none | One entry per eslint rule that is off for this repository, for a rule that flags normal code in bulk. `rule` is an eslint rule name, for example `security/detect-object-injection` (letters, digits, `@`, `_`, `.`, `-` and `/`). `reason` is one line and not empty. A missing key, an extra key, a bad name, an empty reason, a line break in it or a repeated rule exits 2. `apply` renders the entries into the managed `lint/typescript/eslint.config.mjs` as a last config object that sets each rule to `"off"`, with the reason as a comment on its line; `check` reports `file-managed:lint/typescript/eslint.config.mjs` until it is applied. eslint accepts `"off"` for a name it does not know, so a misspelt rule stays on. No effect while TypeScript and Vue are `off` (D13.5). A layer that sets `[[eslint.off]]`, or `[eslint] off = []`, replaces the lower list; there is no per-rule merge (D15.29). |
@@ -1109,6 +1140,8 @@ Design ids, for checks a and c (D16.2):
 - Check c reads `## Verification` of each source that holds the
   section, with the same id forms. A failure names the source as the
   entry wrote it (I-57).
+- When no source holds `## Verification`, check c has no claims and
+  gives no failure. A page that holds the claims must be a source.
 - The SessionStart design-id line names the pages of `[refs] declared`
   when the key is set.
 
@@ -1129,6 +1162,54 @@ Reader changes (D16.3):
   change, with the count (see [Document rules](#document-rules)).
 - In the next release the change leaves the table, and its failures
   count.
+
+### Law references
+
+A `law` reference points at one section of one version of a law
+document in a law archive (D1.3, D2.7). Set the archive with
+`[refs] law_archive` in `trueup.toml` (D16.13).
+
+A marker has one of two forms (D2.1):
+
+- `law: <doc-type>/<slug>/<version> s.<section>`, for example
+  `law: acts/Income_Tax_Act/v13 s.111`.
+- `ref: law/<doc-type>/<slug>/<version>/s.<section>`, for example
+  `ref: law/acts/Income_Tax_Act/v13/s.111`.
+
+`<doc-type>` is lower-case letters and `_`. `<slug>` is letters, digits
+and `_`. `<version>` is `base` or `v<N>`. `<section>` is digits, then
+zero or more upper-case letters.
+
+The checker reads this archive shape and nothing else:
+
+```text
+<archive>/<doc-type>/<slug>/<version>/document.md
+```
+
+- A section heading is a line that starts with `### <section>. `. The
+  checker compares the number as exact text. When a number repeats, the
+  first heading is the section.
+- The section text starts at its heading. It ends before the next
+  heading of level 1 to 3, or at the end of the file.
+- Check a: a missing pinned `document.md`, or no heading for the
+  section, gives `unknown-id`. A file that the checker cannot read gives
+  `unreadable`. With no archive set, each `law` reference gives
+  `no-target` with `target law is not configured: <id>`.
+- The order of versions is `base` first, then `v<N>` by the integer
+  `N`. The newest version is the last directory in that order that
+  holds a `document.md`.
+- Check d compares the pinned version with the newest version (D4.2).
+  When the pin is the newest version, or the section text is the same,
+  it reports nothing. A section that the newest version does not hold
+  gives `unknown-id` with `section absent in <version>: <id>`. A changed
+  section gives `drift` with `section text changed in <version>: <id>`.
+- The checker compares the SHA-256 of each section text after it
+  changes each run of white space to one space and removes the white
+  space at the two ends. So a new line wrap is not a change. The checker
+  calculates the hash itself and reads no hash from the archive.
+- To repair a `drift` row, read the new text, correct the code if
+  necessary, then change the pin to the new version. The checker never
+  changes a pin (I-8).
 
 ### Re-pin plan
 
@@ -1216,7 +1297,7 @@ which always tests the full survey.
 | `file-managed` | Copy mode: the module at `[refs] path` is not byte-equal to the copy `trueup` ships, and has no trueup header (a person's own file, or a copy from before 2026-10-07). | warn | no; an unedited copy from an earlier trueup: `git rm` it, then `apply` the absent-copy error that follows; else merge by hand |
 | `refs-copy` | Global mode: a file sits at `ref_check.py` of the root, and nothing runs it (D9.1). | info | no; `git rm ref_check.py` when it is trueup's old copy |
 | `gitignore` | `.gitignore` lacks a line `trueup` needs (`.scratch/`), and `[scratch] gitignore` is `true`. | error | yes |
-| `managed-legacy` | A file of the old managed lint tree that an earlier trueup wrote: a `LEGACY_PATHS` path (see [Moving from the managed lint tree](#moving-from-the-managed-lint-tree)), or a file under `lint/` whose first line is the managed header or whose JSON holds `"_managed": "trueup"`. A file with no such mark is the target's own and gets no row. The action is `trueup no longer manages this file; remove it when you have moved to trueup lint (see the reference page)`. | info | no; the row informs, it never asks (I-42) |
+| `managed-legacy` | A file of the old managed lint tree that an earlier trueup wrote: a `LEGACY_PATHS` path (see [Moving from the managed lint tree](../how-to/upgrade-trueup.md#moving-from-the-managed-lint-tree)), or a file under `lint/` whose first line is the managed header or whose JSON holds `"_managed": "trueup"`. A file with no such mark is the target's own and gets no row. The action is `trueup no longer manages this file; remove it when you have moved to trueup lint (see the reference page)`. | info | no; the row informs, it never asks (I-42) |
 | `tool-missing` | An enabled rule set, or the Vale style, needs a tool that is not on the path. With TypeScript or Vue on and no `node_modules` in the eslint package directory, `tool-missing:typescript/node_modules` names `run trueup lint --install`; it uses the network, so `check` never runs it (D14.7). In global mode with no `trueup` on the path, `tool-missing:refs/trueup` names the one-time install that the pre-commit entry and `trueup refs` need (D9.1). | info | no |
 
 The `gitignore` row and every other row stay beside the `setup` row. After
@@ -1759,82 +1840,6 @@ same cap in v2 (`min(1, distinct paths / 10)` reaches 1 either way once a
 false-positive rule fires on more than ten files). Fixing that is an
 owner follow-up to this repository, not a `trueup` change.
 
-## Field trial
-
-Before the fixes below landed, a field trial ran `trueup survey` then
-`trueup check --json` (timed) and `check` (text) against six repositories,
-read-only throughout: `git status --short` before and after every run
-matched, and `trueup apply` never ran. Every finding was opened and judged
-by hand as a true positive (TP), a false positive (FP), or noise (an
-accurate finding on data kept on purpose, such as a test fixture). The
-[Calibration](#calibration) table above gives the same six repositories'
-score before and after; this section adds the tier, the judged counts, and
-the run time. The TP, FP and NOISE columns count every plan finding,
-`setup` findings too (meridian's 16 TP are all first-run `config`,
-`file-managed` and `gitignore` findings); the Calibration table counts
-only findings in the five scored categories.
-
-| Repo | Tier | Score before | Score after | TP | FP | NOISE | Time |
-|---|---|---|---|---|---|---|---|
-| trueup (control) | T2 | 0 | 0 | 0 | 0 | 0 | 2.34s |
-| meridian (Python) | T2 | 21 | 0 | 16 | 0 | 19 | 1.05s |
-| target-mixed/src (Python, shell, SQL, TypeScript) | T3 | 30 | 30 | 43 | 61 | 0 | 1.93s |
-| target-py/src (Python, TypeScript) | T2 | 18 | 16 | 28 | 1 | 0 | 2.21s |
-| target-go (Go) | T2 | 38 | 10 | 22 | 2 | 0 | 1.01s |
-| target-php (PHP, Vue) | T2 | 3 | 3 | 28 | 0 | 0 | 0.95s |
-| **Total (six repos)** | | | | **137** | **64** | **19** | |
-
-The trial found six false-positive shapes:
-
-| Id | Shape | Fixed by |
-|---|---|---|
-| FP-1 | `prose` banned the noun "harness" ("the test harness"), not only the verb the rule targets. | [D6.9](../ARCHITECTURE.md#d69--banned-word-forms), a form entry that matches the verb use alone |
-| FP-2 | `prose` banned "unlock" even in its literal sense ("unlock the vault"). | D6.9, a form entry |
-| FP-3 | `prose` cannot tell a policy file that quotes the banned list on purpose from a violation. | D6.9, a hint line under a finding naming 10 or more distinct words |
-| FP-4 | `prose` banned the noun "underscore" (the `_` character), not only the verb sense. | D6.9, a form entry; the plural noun by [D8.5](../ARCHITECTURE.md#d85--verb-only-forms-underscore-and-leverage) |
-| FP-5 | `secret-content` matched a PEM `BEGIN PRIVATE KEY` banner used as a documentation placeholder, with no key material after it. | [D6.10](../ARCHITECTURE.md#d610--secret-body-check), the banner now needs a base64-looking line within 3 lines after it |
-| FP-6 | `refcheck` treated a project's own comment-tag convention (`# D1:`, `# O1:`, …) as an unrecognized trueup marker. | [D6.11](../ARCHITECTURE.md#d611--local-tags), `ref_check.toml`'s `[registry] local_tags` key; set through `trueup.toml`'s `[refs] local_tags` since [D8.7](../ARCHITECTURE.md#d87--refs-local_tags) |
-
-The first run on a superrepository and its Rust submodule (target-rust, 2026-10-07)
-found five more shapes, and one under-report:
-
-| Id | Shape | Fixed by |
-|---|---|---|
-| FP-7 | `refcheck` walked into a submodule of the target and reported its files, which the survey never lists. | [D8.2](../ARCHITECTURE.md#d82--nested-repository-boundary), the walk stops at a nested `.git` |
-| FP-8 | `lockfile` fired on `lint/typescript/package.json`, the manifest trueup itself writes. | [D8.3](../ARCHITECTURE.md#d83--managed-manifest-and-the-install-note), the managed marker exempts it; an `info` finding names the install |
-| FP-9 | `prose` fired on a list item or paragraph that quotes the banned list to state the rule (`Never use: ...`). | [D8.4](../ARCHITECTURE.md#d84--quoted-list-rule), the cue rule in `check` and in the Vale template |
-| FP-10 | `prose` fired on the plural noun `underscores` and on the noun `leverage`. | [D8.5](../ARCHITECTURE.md#d85--verb-only-forms-underscore-and-leverage), verb-only form entries |
-| FP-11 | The Vale hook fired on a string literal (`Page.navigate`) in an `.mjs` file, which Vale reads as plain text. | [D8.6](../ARCHITECTURE.md#d86--vale-source-extensions), the template names the lexed extensions only |
-| UR-1 | The first `check` ran the checker with every switch off, because the target had no `ref_check.toml` yet; `apply` then wrote one, and the next `check` grew from 4 to 243 `refcheck` findings. | [D8.1](../ARCHITECTURE.md#d81--first-run-refcheck-parity), `check` runs the checker with the rendered `ref_check.toml` |
-
-The second run on target-rust/src (2026-10-07) found one more shape, and three
-gaps:
-
-| Id | Shape | Fixed by |
-|---|---|---|
-| FP-12 | `file-managed:ref_check.py` gave a manual warn on a copy nobody edited: the copy an earlier trueup wrote, before an update of the checker. | [D9.3](../ARCHITECTURE.md#d93--the-checker-copy-carries-the-managed-header), the copy carries the header, so `apply` rewrites it; in global mode ([D9.1](../ARCHITECTURE.md#d91--checker-modes)) there is no copy |
-| G-1 | The `ref-check` hook failed on 35 findings that `[[keep]]` held out of the plan: the standalone checker read `ref_check.toml` only. | [D9.2](../ARCHITECTURE.md#d92--kept-failures-in-ref_checktoml), the `[keep]` table |
-| G-2 | The layout check could not be switched off for a repository whose pages keep fixed paths; the only way out was one `[[keep]]` entry per page. | [D9.4](../ARCHITECTURE.md#d94--refs-layout), `[refs] layout = false` |
-| G-3 | The checker was a copy in each repository, so each update of trueup left an old copy in every target. | [D9.1](../ARCHITECTURE.md#d91--checker-modes), global mode runs `trueup refs` from one install |
-
-A run on target-web/3d (2026-10-16) found two more shapes:
-
-| Id | Shape | Fixed by |
-|---|---|---|
-| FP-13 | `refcheck` read the query string of a local link (`../public/sim.html?preset=...`) as part of the file path, so 30 links to a file that exists failed with `broken-link`. | [D2.10](../ARCHITECTURE.md#d210--document-link-rules), the path part ends at the first `?` |
-| FP-14 | The `vale` hook failed on `.state/runs/` records and on `public/vendor/three/`, paths that the `ignore` globs leave out of `check`, so each commit of a run record failed. The `eslint` hook got the same paths. | [D5.6](../ARCHITECTURE.md#d56--managed-files-and-apply), each hook that gets the file names excludes the `ignore` globs |
-
-FP-1 (18), FP-2 (1) and FP-3 (2) drove 21 of target-mixed/src's 61 false
-positives; the other 40 were FP-6. FP-4 was target-py/src's one false
-positive. FP-5 alone drove about 28 of target-go's 38 v1 points (the
-`security` category is a step function, so one false positive filled its
-full weight of 25). FP-6 is fixed in `ref_check.py` and re-copied into this repository,
-but target-mixed/src's own `ref_check.toml` does not yet set `local_tags`
-(see [Follow-ups](#follow-ups)), so its score does not move in the
-Calibration table above. The raw trial record, with the evidence for every
-row, is `.state/runs/trueup-v2/00-field-trial.md`, a private work record
-of the maintainer that is not in this repository.
-
 ## Baseline
 
 `trueup baseline` writes `.trueup-baseline.json` at the target root from a
@@ -2143,293 +2148,4 @@ as it is, with the plugin and the `trueup` command side by side. This
 note closes P5 and F1 of
 [purpose and state](../explanation/purpose-and-state.md).
 
-## Moving from the managed lint tree
-
-Before D14.8, `apply` wrote a tree of lint files into the target. Now
-the target keeps only `trueup.toml` (and, in copy mode, the checker
-pair), and `trueup lint` renders the tool configs at run time. The old
-files stay where they are until the person removes them; trueup never
-removes them. `check` gives one `managed-legacy` info row for each old
-file that an earlier trueup wrote, and the row changes no exit code.
-
-`managed.LEGACY_PATHS` holds the old managed paths:
-
-- `.pre-commit-config.yaml`
-- `.github/workflows/trueup.yml`
-- `.editorconfig`
-- `lint/jscpd.json`
-- `lint/gitleaks/gitleaks.toml`
-- `.claude/rules/trueup.md`
-- `lint/typescript/eslint.config.mjs`
-- `lint/typescript/package.json`
-- `lint/typescript/node_modules`
-- `lint/vale/.vale.ini`, and the eight files under `lint/vale/styles/`:
-  `Trueup/Banned.yml`, `Contractions.yml`, `FirstPerson.yml`,
-  `Latin.yml`, `SentenceLength.yml`, `We.yml`, `Will.yml` and
-  `config/vocabularies/Trueup/accept.txt`
-
-The rule-set files under `lint/<language>/` that carry the managed
-header (for example `lint/python/ruff.toml`) get the same row.
-
-The steps for one target:
-
-1. Run `check` and read the `managed-legacy` rows.
-2. Replace the old local hooks of `.pre-commit-config.yaml` with the
-   one entry that `trueup template pre-commit` prints:
-
-   ```yaml
-   repos:
-     - repo: local
-       hooks:
-         - id: trueup-lint
-           name: trueup lint
-           entry: trueup lint
-           language: system
-           pass_filenames: true
-           require_serial: true
-   ```
-
-   Keep the hooks of the target's own in the same file. Remove the
-   managed header line, so the file is the target's own.
-3. With TypeScript or Vue on, run `trueup lint --install` once on each
-   machine. It uses the network.
-4. Run `trueup lint` and fix or record what it reports.
-5. Remove each old file with `git rm`. Keep the files that the target
-   owns: the eslint suppressions file and the pydoclint baseline. Their
-   paths are the `[eslint] suppressions` and `[python]
-   pydoclint_baseline` keys, so they can stay where they are.
-6. For a CI workflow or an `.editorconfig` that the target wants to
-   keep, remove the managed header line, or replace the file with the
-   text of `trueup template ci` or `trueup template editorconfig`.
-
-Since 2026-11-02 the old paths are not in the list of trueup's own
-files that the tier pick does not count (`survey.TRUEUP_OWN_PATHS`,
-D15.37). They count for the tier and the root budget, so a target that
-still holds them can change tier (a T0 tree can reach T2); step 5
-removes them. The
-lockfile exemption of the old `lint/typescript/package.json` stays
-(D8.3).
-
-A repository can also use the `trueup-lint` hook of
-`.pre-commit-hooks.yaml` (`language: python`) as a `repo:` entry, with
-`https://github.com/amsys/trueup` as `repo:` and a tag as `rev:`.
-
-## Upgrade notes
-
-**The JSON managed-file marker (v2).** A managed JSON file this repository
-renders with no comment syntax (`lint/jscpd.json`,
-`lint/typescript/package.json`) now carries a top-level `"_managed":
-"trueup"` key, so `trueup` can tell its own file from one a person wrote by
-hand under the same path. For one version, a file with no marker is still
-read as managed when its keys and values match the old, marker-less form
-that `trueup` wrote before this change (apart from a short list of values
-every version is free to differ on, such as a pinned dependency version).
-A person's own file under the same path, one `trueup` never wrote, is
-unaffected: it was already a manual, unmanaged finding, and stays one.
-
-**Checker modes (2026-10-07).** A target set up before this version has
-a checker copy at `ref_check.py` and a hook entry `python3 ref_check.py
---root .`. With no `[refs] mode` key it is now in global mode. The steps
-to move it:
-
-1. Install trueup once on the machine: `uv tool install --editable
-   <plugin root>` (the editable install follows the trueup working tree),
-   or `pipx install <plugin root>`. Each machine that commits needs this.
-2. Run `check`. Expect `file-managed:.pre-commit-config.yaml` (the hook
-   entry becomes `trueup refs --root .`), `file-managed:ref_check.toml`
-   when a `refcheck:` id is kept (the `[keep]` table), the `info` finding
-   `refs-copy:ref_check.py`, and, for a repository whose pages keep fixed
-   paths, the chance to replace the `no-front-matter` keep entries with
-   `[refs] layout = false`.
-3. `apply` the `file-managed` ids, then `git rm ref_check.py`.
-4. Run `pre-commit run --all-files`: the `ref-check` hook now passes on
-   the kept findings.
-
-A repository whose CI runs the hooks keeps the copy: set `[refs] mode =
-"copy"` before step 2. Its old copy has no trueup header, so the first
-`check` gives the manual `file-managed` warn: `git rm ref_check.py`, run
-`check` again, and `apply` the automatic error for the absent copy. From
-then on the copy carries the header, and `apply` rewrites it at each
-update. CI cannot install trueup until it has a git source.
-
-A target whose `trueup.toml` set `[refs] path` before this version, with
-no `mode`, now exits 2 on every command: add `mode = "copy"` above the
-`path` line. The `refs-copy` finding looks at `ref_check.py` of the root
-only; an old copy at another path gets no finding, so delete it by hand.
-`target-rust/src` is one target to move; `target-mixed/src` and this
-repository's calibration repositories are others.
-
-**`[scan] ignore` (2026-10-16).** A target with `ignore` globs gets
-`file-managed:ref_check.toml`: the rendered file now holds `[scan] ignore`.
-In copy mode, apply it together with the `file-managed` id of the checker
-copy: an older copy does not know the `[scan]` table and exits 2 on it. In
-global mode the installed `trueup` must be this version or later.
-
-**Trust round, wave A (2026-11-02).** These changes can change the
-result of a run that passed before:
-
-- A target with no `trueup.toml` and no user default file runs
-  `minimal`, not `house` (D15.6). Pass `--profile house` to see the house
-  rows before the setup.
-- `survey`, `check`, `apply`, `baseline` and `lint` exit 2 outside a git
-  work tree, and all but `survey` exit 2 on a root with no file to check
-  (D15.2). `survey` prints the empty survey there and exits 0.
-- `trueup lint` exits 2 when a tool is not installed (D15.4). Install the
-  tool, or add `--skip-missing` to the call. A CI job that ran
-  `trueup lint` with a missing tool now fails.
-- `trueup lint` runs jscpd and sqlfluff only from the tools directory
-  (D15.5). Run `trueup lint --install` once on each machine.
-- `secret-content` and `changelog` ids hold a fingerprint, not a line
-  number (D15.8). A keep written for an old line-numbered id
-  (`secret-content:<path>:<n>` or `changelog:<path>:<n>`) now matches
-  nothing, and `check` shows a `keep-stale` row for it. Replace it with
-  the new id from `check --json`, or keep the file by prefix
-  (`secret-content:<path>`). `target-rust/src` holds such a keep. This
-  repository's own `trueup.toml` dropped the keep
-  `prose:tests/test_docrules.py`: its `keep-stale` row showed that it
-  kept nothing.
-- The keys of `.trueup-baseline.json` do not change, so an existing
-  baseline file stays valid.
-
-**Trust round, wave B (2026-11-02).** These changes can change the plan
-of a run:
-
-- `scratch` is automatic only for a tracked name that proves scratch
-  (D15.9). `README.old.md`, `* copy.*` and `.swp` scratch rows, and each
-  other candidate that only looks like scratch, are manual now. An
-  `apply --all-auto` that removed them before leaves them for the owner.
-- `secret-file` reads 64 bytes of a key name, and the secret scan of an
-  `.env` file decides that row (D15.10). A public certificate gives no
-  row; a key name with an unknown head and an `.env` file with no proven
-  secret are manual now.
-- A text file over 1 MiB gives an `info` `large-text` row, not a
-  `binary` warn (D15.11).
-- `duplicate` skips a file under 256 bytes, and a group whose every copy
-  is in use (D15.12).
-- A page in a tooling tree, a generated page, a page whose directory a
-  build file names, and the pages of a content tree get no
-  `doc-misplaced` row and no move (D15.13).
-- `platform:*` rows are `info`, so they no longer make `check` exit 1
-  (D15.15). A `[[keep]]` entry for one of them still matches it and does
-  not go stale.
-- `harness` is not banned any more (D15.16).
-- A `drift-command` path that git ignores, or that a build file names,
-  is `info` (D15.17).
-- The checker reads more Markdown forms (D15.18) and Rust `///` and
-  `//!` lines as marker positions (D15.19). A Rust target can get many
-  more `refcheck` rows.
-  Real target: target-rust/src gives 670 failures and 617 references (was 11 and 0): 617 `unknown-id`, 44 `malformed`, 9 `unregistered`.
-
-**Trust round, wave C (2026-11-03).** These changes can change the
-result of a run:
-
-- A gitleaks run that fails gives a `secret-engine` error row, so
-  `check` exits 1 (D15.20). Fix the gitleaks run; the built-in rows
-  still run.
-- `check --baseline` no longer fails on a score rise alone (D15.21). The
-  `files` category counts covered files, not findings.
-- A file over 1 MiB gives no text to a text read (survey, hygiene,
-  layout, drift), and a symlink out of the root or a device gives no
-  content (D15.22). The line counter counts such a file with 0 lines.
-- A manifest deeper than one level, or under a test or example
-  directory, no longer counts for the tier (D15.26). A target can get a
-  lower tier.
-- An untracked page gets no move (D15.27). `apply --plan` refuses a
-  saved automatic row that does not hold on the tree now, and `apply`
-  refuses a write that resolves outside the root.
-- The `run_date` stamp keeps the comments of `trueup.toml`; a config
-  write still drops them (D15.27).
-- `refs.path` with copy mode from another layer is valid now; a layer
-  that sets `[[eslint.off]]` replaces the lower list; a higher `[layout]`
-  switch wins over a lower `[refs] layout`; a bad `run_date` exits 2
-  (D15.29).
-- The strict TypeScript rule set also lints `js,jsx,mjs,cjs` files, and
-  the Vue and phpmd strict limits changed (D15.28). A target can get new
-  lint failures.
-
-**Trust round, own paths (2026-11-02).** This change can change the tier
-and the root budget of a target:
-
-- The old managed paths (`lint/`, `.editorconfig`,
-  `.pre-commit-config.yaml`, `.github/workflows/trueup.yml`,
-  `.claude/rules/trueup.md`) count for the tier, the root budget and CI
-  (D15.37). Only `trueup.toml`, `ref_check.toml`, `.trueup-baseline.json`
-  and `ref_check.py` stay out. An adopter of an earlier trueup can get a
-  higher tier or a `root-budget` warning; remove the old files (see
-  [Moving from the managed lint tree](#moving-from-the-managed-lint-tree)).
-
-**Round 16 (2026-11-09).** With none of the three new `[refs]` keys set,
-the checker gives the same rows as before (I-54). These changes can
-change the result of a run:
-
-- Reader changes (D16.3). From this release on, a release that widens
-  what the checker reads registers the change for one release. The new
-  failures of that change are `warning:` lines and one
-  `refs-reader-change:<name>` info row, and the exit code does not
-  change. Fix the markers in that release, because the next release
-  fails on them. To fail on them at once, add the name to
-  `[refs] accepted_reader_changes`. No change is registered in this
-  release.
-- A design on more than one page, or with other id forms, can set
-  `[refs] declared` and `[refs] id_forms` (D16.2). A source that is
-  missing on a machine, for example a page outside the root in a clone,
-  fails the run with one `no-target` row.
-- A link target that starts with `${NAME}` no longer gives `broken-link`
-  (D16.4).
-- The rendered gitleaks config drops the `generic-api-key` row of the
-  RFC 6455 sample key (D16.5). A `[[keep]]` entry for that row then gives
-  `keep-stale`: remove it.
-- A `duplicate` row whose two paths differ in one directory segment has
-  a new evidence and action text. Its id does not change (D16.6).
-- The strict ruff config ignores `CPY` (D16.7).
-- More reads are bounded (D16.10). The reads of `docrules`, `baseline`,
-  `apply`, `health` and `managed` refuse a device, a FIFO, a symlink out
-  of the root and a file over the cap. The checker gives `unreadable`
-  for each of them. A coverage report or baseline file that is a symlink
-  out of the root reads as absent, so a recorded `test` value fails the
-  gate as a missing report.
-- A `move:` id stops with `failed <move id>: refused: <rel> ...` when a
-  tracked Markdown page is over the read cap, or is a symlink to a
-  regular file out of the root, because the run cannot see the links of
-  that page (owner ruling 11 of round 16). Move such a page by hand. A
-  device, a FIFO and a page that does not decode do not stop a move.
-- The tree identity of a listed symlink is the sha of its link text
-  (D16.10). A plan saved over such a tree before this release gives
-  exit 2 one time: run `check` again.
-- The tokei call has a limit of 60 s. On expiry the survey uses the
-  built-in counter and prints one line (D16.10).
-- On Python 3.11 to 3.13, a path below a directory that the run cannot
-  read no longer raises (D16.1).
-
-## Follow-ups
-
-Not done by this version, and not `trueup` code:
-
-- **target-mixed's own `trueup.toml`.** [D6.11](../ARCHITECTURE.md#d611--local-tags)
-  adds the `[registry] local_tags` key so a project's own comment-tag
-  convention (`# D1:`, `# O1:`, `# K2:`, `# L1:`, `# S1:`) is not read as an
-  unrecognized trueup marker (FP-6, above). Since
-  [D8.7](../ARCHITECTURE.md#d87--refs-local_tags) the key is set in
-  `trueup.toml`, as `[refs] local_tags = ["D", "O", "K", "L", "S"]`, and
-  `apply` renders it into the managed `ref_check.toml`; a hand edit of that
-  file is drift. `target-mixed/src` still needs the key; until then,
-  `check` on that repository keeps reporting the FP-6 findings.
-  `target-rust/src` has it since 2026-10-07.
-- **A git source for trueup.** Since 2026-11-16 the source is
-  `https://github.com/amsys/trueup`: a CI runner installs trueup with
-  `pip install git+https://github.com/amsys/trueup@<tag>`, and the
-  `trueup-baseline` hook of
-  [gate CI with a baseline](../how-to/gate-ci-with-a-baseline.md) names
-  it as `repo:`. Open: the CI template still has only a comment where
-  the install goes, and a repository whose CI cannot reach GitHub
-  keeps the checker copy ([D9.1](../ARCHITECTURE.md#d91--checker-modes)).
-- **Quoted mentions in double quotes.** A banned word quoted on its own
-  (`"seamless"`) in a block with no cue still gives a `prose` finding
-  ([D8.4](../ARCHITECTURE.md#d84--quoted-list-rule) names the gap). Five
-  such blocks sat in community plugin docs, none in target-rust.
-- **The meridian check's MADR decision page type.** The document-layout
-  check (check h), merged from the archived meridian project, recognizes
-  four page types: `tutorial`, `how-to`, `reference` and `explanation`. A
-  fifth, `decision` (a [MADR](https://adr.github.io/madr/)-style
-  architecture decision record under `docs/decisions/`), needs adding to
-  its `_PAGE_TYPES` and its layout check. Not started.
+The upgrade steps are in [Upgrade trueup](../how-to/upgrade-trueup.md), and the field trial and the follow-ups are in [Field trial](../explanation/field-trial.md).

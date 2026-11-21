@@ -78,12 +78,12 @@ def test_the_schema_reads_the_switches_and_the_law_archive(tmp_path):
         "links = true\n"
         "\n"
         "[targets.law]\n"
-        'archive = "../lawsmu/archive"\n',
+        'archive = "../laws/archive"\n',
         encoding="utf-8",
     )
     config = load_config(tmp_path)
     assert (config.registry, config.comments, config.links) == (True, True, True)
-    assert config.archive == (tmp_path / ".." / "lawsmu" / "archive").resolve()
+    assert config.archive == (tmp_path / ".." / "laws" / "archive").resolve()
     assert config.archive.is_absolute()
 
 

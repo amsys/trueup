@@ -4,8 +4,10 @@ Thank you for looking at trueup.
 
 ## Before you start
 
-- Read [the brief](docs/BRIEF.md) for the goals and the decisions already
-  taken, and [the architecture](docs/ARCHITECTURE.md) for the design.
+- Read [how trueup works](docs/explanation/how-trueup-works.md) to see
+  how the code is built, and [the brief](docs/BRIEF.md) for the goals and
+  the decisions already taken. [The architecture](docs/ARCHITECTURE.md)
+  is the record to look up one section by its id.
 - Read [the comment standard](docs/reference/comment-standard.md) and
   [the document standard](docs/reference/document-standard.md): every file
   you touch, code or prose, follows one of them.
@@ -35,9 +37,15 @@ file. Do not run two suites at the same time on one machine: the
 4. Run the checks from the root of the repository:
 
    ```sh
+   python3 trueup check --root .
+   python3 trueup lint --root .
    python3 trueup refs --root .
-   UV_OFFLINE=1 pytest -q
+   pytest tests/test_cli.py
    ```
+
+   `check` must end with "The plan is empty". `lint` needs `ruff` and
+   `vale` on the path. Run the test files of the modules that you
+   changed; the full suite (`pytest -q`) also runs in CI on each push.
 
    `trueup refs` runs the reference checker: it proves that each design
    id that a comment or a test cites exists, and that each link between

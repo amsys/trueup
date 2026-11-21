@@ -6,5 +6,8 @@ links = true
 layout = true
 readme = true
 
+[targets.arch]
+sources = ["docs/ARCHITECTURE.md", "docs/reference/design-verification.md"]
+
 [scan]
 ignore = ["tests/fixtures/**", "trueup/templates/**"]
