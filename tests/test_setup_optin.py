@@ -253,6 +253,23 @@ def test_apply_setup_id_writes_the_tier_set_only(tmp_path: Path) -> None:
     assert "gitignore:.gitignore" in ids
 
 
+def test_apply_setup_id_prints_one_line_for_trueup_toml(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """`apply --ids setup:trueup.toml` prints `wrote trueup.toml` one time.
+
+    The run writes the file and then stamps `run_date` into it. The stamp is
+    a second write of the same path, and it gets no second line.
+
+    arch: D12.9, D5.11
+    """
+    root = _t1(tmp_path)
+    capsys.readouterr()
+    assert _apply(root, ids=[SETUP_ID]) == 0
+    lines = capsys.readouterr().out.splitlines()
+    assert lines.count("wrote trueup.toml") == 1
+
+
 def test_all_auto_never_takes_the_setup_row(tmp_path: Path) -> None:
     """`--all-auto` fixes the gitignore row and writes no setup file.
 

@@ -1089,6 +1089,7 @@ def _write_file(ctx: _Context, path: str, content: str) -> None:
 
     Args:
         ctx: The run state; `changed` gains the path when it is written.
+            A second write of one path in a run prints no second line.
         path: The repo path.
         content: The text to write, as UTF-8 with no newline translation.
 
@@ -1104,8 +1105,10 @@ def _write_file(ctx: _Context, path: str, content: str) -> None:
     full.parent.mkdir(parents=True, exist_ok=True)
     _write_bytes(full, data)
     config_mod.clear_cache()
+    first_write = path not in ctx.changed
     ctx.changed.append(path)
-    print(f"wrote {path}")
+    if first_write:
+        print(f"wrote {path}")
 
 
 def _append_lines(ctx: _Context, path: str, lines: list[str]) -> None:
